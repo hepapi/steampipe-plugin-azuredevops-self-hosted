@@ -2,9 +2,10 @@ package azuredevops
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/google/uuid"
-	"github.com/microsoft/azure-devops-go-api/azuredevops/v6/core"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/core"
 	"github.com/turbot/go-kit/types"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
@@ -158,10 +159,15 @@ func listProjects(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 				return nil, nil
 			}
 		}
-		input.ContinuationToken = types.String(response.ContinuationToken)
 		if response.ContinuationToken == "" {
 			break
 		}
+		continuationToken, err := strconv.Atoi(response.ContinuationToken)
+		if err != nil {
+			plugin.Logger(ctx).Error("azuredevops_project.listProjects", "continuation_token_error", err)
+			return nil, err
+		}
+		input.ContinuationToken = types.Int(continuationToken)
 	}
 
 	return nil, nil

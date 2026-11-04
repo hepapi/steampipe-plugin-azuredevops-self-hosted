@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/microsoft/azure-devops-go-api/azuredevops/v6/release"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/release"
 	"github.com/turbot/go-kit/types"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"

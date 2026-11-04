@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/microsoft/azure-devops-go-api/azuredevops/v6 v6.0.1
+	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/turbot/go-kit v1.1.0
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.14.0
 )
