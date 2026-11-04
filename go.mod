@@ -1,4 +1,4 @@
-module github.com/turbot/steampipe-plugin-azuredevops
+module github.com/hepapi/steampipe-plugin-azuredevops-self-hosted
 
 go 1.26.0
 
