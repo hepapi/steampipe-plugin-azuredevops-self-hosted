@@ -2,6 +2,7 @@ package azuredevops
 
 import (
 	"context"
+	"net/url"
 	"os"
 	"strings"
 
@@ -45,7 +46,32 @@ func getOrganizationUncached(ctx context.Context, d *plugin.QueryData, h *plugin
 		organizationURL = *org.OrganizationURL
 	}
 
-	orgName := strings.Split(organizationURL, "https://dev.azure.com/")[1]
+	return organizationName(organizationURL), nil
+}
 
-	return orgName, nil
+// organizationName derives the organization (SaaS) or collection (self-hosted)
+// name from the organization_url. For self-hosted URLs such as
+// https://code.digiturk.net/SCMPOCCollection it returns the last path segment
+// (SCMPOCCollection). For SaaS URLs such as https://dev.azure.com/org it
+// returns the last path segment (org). If there is no path segment, it falls
+// back to the host.
+func organizationName(organizationURL string) string {
+	organizationURL = strings.TrimRight(organizationURL, "/")
+
+	u, err := url.Parse(organizationURL)
+	if err != nil {
+		return organizationURL
+	}
+
+	// Take the last non-empty path segment (collection or org name).
+	path := strings.Trim(u.Path, "/")
+	if path != "" {
+		segments := strings.Split(path, "/")
+		if last := segments[len(segments)-1]; last != "" {
+			return last
+		}
+	}
+
+	// Fall back to the host when there is no path segment.
+	return u.Host
 }
