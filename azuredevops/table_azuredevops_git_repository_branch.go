@@ -2,6 +2,7 @@ package azuredevops
 
 import (
 	"context"
+	"strings"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/git"
 	"github.com/turbot/go-kit/types"
@@ -99,6 +100,12 @@ func listGitRepositoryBranches(ctx context.Context, d *plugin.QueryData, h *plug
 
 	branches, err := client.GetBranches(ctx, input)
 	if err != nil {
+		// A repository with no branches (e.g. an empty/uninitialized repo)
+		// returns VS403403 "Cannot find any branches". Treat this as an empty
+		// result rather than failing the whole query.
+		if isNoBranchesError(err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevops_git_repository_branch.listGitRepositoryBranches", "api_error", err)
 		return nil, err
 	}
@@ -147,4 +154,15 @@ func getRepositoryBranch(ctx context.Context, d *plugin.QueryData, h *plugin.Hyd
 	}
 
 	return Branch{*branch, repositoryId}, nil
+}
+
+// isNoBranchesError reports whether the error indicates a repository that has
+// no branches (e.g. an empty or uninitialized repository). Azure DevOps returns
+// VS403403 "Cannot find any branches for the <repo> repository." in this case.
+func isNoBranchesError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := err.Error()
+	return strings.Contains(msg, "VS403403") || strings.Contains(msg, "Cannot find any branches")
 }
