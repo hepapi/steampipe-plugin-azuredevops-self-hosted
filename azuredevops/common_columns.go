@@ -12,6 +12,16 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
+// qualString returns the equals-qual value for column, or "" when the qual
+// was not supplied. EqualsQuals only contains columns present in the query,
+// so a missing entry is nil.
+func qualString(d *plugin.QueryData, column string) string {
+	if d == nil || d.EqualsQuals[column] == nil {
+		return ""
+	}
+	return d.EqualsQuals[column].GetStringValue()
+}
+
 func commonColumns(c []*plugin.Column) []*plugin.Column {
 	return append([]*plugin.Column{
 		{

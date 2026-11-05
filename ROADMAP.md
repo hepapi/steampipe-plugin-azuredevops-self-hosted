@@ -21,24 +21,24 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 
 ## Stage 1 — Git & Code (pairs with branch policies)
 
-- [ ] `azuredevops_git_pull_request` — `git.GetPullRequests`
-- [ ] `azuredevops_git_pull_request_thread` — `git.GetThreads`
-- [ ] `azuredevops_git_pull_request_comment` — `git.GetComments`
-- [ ] `azuredevops_git_pull_request_reviewer` — `git.GetPullRequestReviewers`
-- [ ] `azuredevops_git_commit` — `git.GetCommits`
-- [ ] `azuredevops_git_ref` — `git.GetRefs`
-- [ ] `azuredevops_git_tag` — `git.GetAnnotatedTags`
-- [ ] Enrich `azuredevops_git_repository` (project name, default branch object, `is_disabled`)
+- [x] `azuredevops_git_pull_request` — `git.GetPullRequests`
+- [x] `azuredevops_git_pull_request_thread` — `git.GetThreads`
+- [x] `azuredevops_git_pull_request_comment` — `git.GetComments`
+- [x] `azuredevops_git_pull_request_reviewer` — `git.GetPullRequestReviewers`
+- [x] `azuredevops_git_commit` — `git.GetCommits`
+- [x] `azuredevops_git_ref` — `git.GetRefs`
+- [x] `azuredevops_git_tag` — `git.GetAnnotatedTags`
+- [x] Enrich `azuredevops_git_repository` (project name, default branch object, `is_disabled`)
 
 ---
 
 ## Stage 2 — Policy & Security
 
-- [ ] `azuredevops_policy_type` — `policy.GetPolicyTypes`
-- [ ] `azuredevops_policy_evaluation` — `policy.GetPolicyEvaluations`
-- [ ] `azuredevops_security_namespace` — `security` package
-- [ ] `azuredevops_permission` / ACLs — `security` package
-- [ ] `azuredevops_servicehook_subscription` — `servicehooks` package
+- [x] `azuredevops_policy_type` — `policy.GetPolicyTypes`
+- [x] `azuredevops_policy_evaluation` — `policy.GetPolicyEvaluations`
+- [x] `azuredevops_security_namespace` — `security.QuerySecurityNamespaces`
+- [x] `azuredevops_permission` / ACLs — `security.QueryAccessControlLists`
+- [x] `azuredevops_servicehook_subscription` — `servicehooks.ListSubscriptions`
 
 ---
 
