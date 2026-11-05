@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/hepapi/steampipe-plugin-azuredevops-self-hosted/azuredevops"
+	"github.com/hepapi/steampipe-plugin-azuredevopssh/azuredevops"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 

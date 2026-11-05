@@ -101,3 +101,80 @@ from
 where
   json_extract(project, '$.name') = 'private_project';
 ```
+
+### List repositories in a project by name (project_name)
+Use the flattened `project_name` column to filter repositories without having to rely on the `project` JSON object.
+
+```sql+postgres
+select
+  name,
+  project_name,
+  default_branch
+from
+  azuredevops_git_repository
+where
+  project_name = 'private_project';
+```
+
+```sql+sqlite
+select
+  name,
+  project_name,
+  default_branch
+from
+  azuredevops_git_repository
+where
+  project_name = 'private_project';
+```
+
+### List disabled repositories
+Find repositories that have been disabled, along with their default branch.
+
+```sql+postgres
+select
+  name,
+  project_name,
+  default_branch,
+  is_disabled
+from
+  azuredevops_git_repository
+where
+  is_disabled;
+```
+
+```sql+sqlite
+select
+  name,
+  project_name,
+  default_branch,
+  is_disabled
+from
+  azuredevops_git_repository
+where
+  is_disabled;
+```
+
+### Inspect the default branch object
+Explore the full default branch object (including its ref and object) for repositories that have a default branch configured.
+
+```sql+postgres
+select
+  name,
+  default_branch,
+  default_branch_object
+from
+  azuredevops_git_repository
+where
+  default_branch_object is not null;
+```
+
+```sql+sqlite
+select
+  name,
+  default_branch,
+  default_branch_object
+from
+  azuredevops_git_repository
+where
+  default_branch_object is not null;
+```

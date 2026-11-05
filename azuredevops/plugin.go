@@ -10,7 +10,7 @@ import (
 // Plugin creates this (azuredevops) plugin
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
-		Name:             "steampipe-plugin-azuredevops-self-hosted",
+		Name:             "steampipe-plugin-azuredevopssh",
 		DefaultTransform: transform.FromCamel(),
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
@@ -25,9 +25,16 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_build":                        tableAzureDevOpsBuild(ctx),
 			"azuredevops_build_definition":             tableAzureDevOpsBuildDefinition(ctx),
 			"azuredevops_dashboard":                    tableAzureDevOpsDashboard(ctx),
+			"azuredevops_git_commit":                   tableAzureDevOpsGitCommit(ctx),
+			"azuredevops_git_pull_request":             tableAzureDevOpsGitPullRequest(ctx),
+			"azuredevops_git_pull_request_comment":     tableAzureDevOpsGitPullRequestComment(ctx),
+			"azuredevops_git_pull_request_reviewer":    tableAzureDevOpsGitPullRequestReviewer(ctx),
+			"azuredevops_git_pull_request_thread":      tableAzureDevOpsGitPullRequestThread(ctx),
+			"azuredevops_git_ref":                      tableAzureDevOpsGitRef(ctx),
 			"azuredevops_git_repository":               tableAzureDevOpsGitRepository(ctx),
 			"azuredevops_git_repository_branch":        tableAzureDevOpsGitRepositoryBranch(ctx),
 			"azuredevops_git_repository_branch_policy": tableAzureDevOpsGitRepositoryBranchPolicy(ctx),
+			"azuredevops_git_tag":                      tableAzureDevOpsGitTag(ctx),
 			"azuredevops_group":                        tableAzureDevOpsGroup(ctx),
 			"azuredevops_pipeline":                     tableAzureDevOpsPipeline(ctx),
 			"azuredevops_project":                      tableAzureDevOpsProject(ctx),

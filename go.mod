@@ -1,4 +1,4 @@
-module github.com/hepapi/steampipe-plugin-azuredevops-self-hosted
+module github.com/hepapi/steampipe-plugin-azuredevopssh
 
 go 1.26.0
 

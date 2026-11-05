@@ -2,6 +2,7 @@ package azuredevops
 
 import (
 	"context"
+	"strings"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/git"
 	"github.com/turbot/go-kit/types"
@@ -41,6 +42,18 @@ func tableAzureDevOpsGitRepository(_ context.Context) *plugin.Table {
 				Type:        proto.ColumnType_STRING,
 			},
 			{
+				Name:        "default_branch_object",
+				Description: "Details of the repository default branch, including its current commit and ahead/behind counts.",
+				Type:        proto.ColumnType_JSON,
+				Hydrate:     getRepositoryDefaultBranch,
+				Transform:   transform.FromValue(),
+			},
+			{
+				Name:        "is_disabled",
+				Description: "True if the repository is disabled.",
+				Type:        proto.ColumnType_BOOL,
+			},
+			{
 				Name:        "is_fork",
 				Description: "True if the repository was created as a fork.",
 				Type:        proto.ColumnType_BOOL,
@@ -50,6 +63,12 @@ func tableAzureDevOpsGitRepository(_ context.Context) *plugin.Table {
 				Description: "The project Id.",
 				Type:        proto.ColumnType_STRING,
 				Transform:   transform.FromField("Project.Id"),
+			},
+			{
+				Name:        "project_name",
+				Description: "The name of the project this repository belongs to.",
+				Type:        proto.ColumnType_STRING,
+				Transform:   transform.FromField("Project.Name"),
 			},
 			{
 				Name:        "remote_url",
@@ -176,4 +195,62 @@ func getRepository(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDa
 	}
 
 	return repo, nil
+}
+
+// getRepositoryDefaultBranch returns the branch stats object for the repository
+// default branch. This is a separate per-row hydrate so that the expensive
+// branch lookup only runs when the column is requested. Returns nil (null
+// column) when the repository has no default branch or the default branch
+// cannot be resolved (e.g. an empty/uninitialized repository).
+func getRepositoryDefaultBranch(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	repo, ok := h.Item.(git.GitRepository)
+	if !ok {
+		return nil, nil
+	}
+	if repo.DefaultBranch == nil || *repo.DefaultBranch == "" {
+		return nil, nil
+	}
+
+	connection, err := getConnection(ctx, d)
+	if err != nil {
+		plugin.Logger(ctx).Error("azuredevops_git_repository.getRepositoryDefaultBranch", "connection_error", err)
+		return nil, err
+	}
+	client, err := git.NewClient(ctx, connection)
+	if err != nil {
+		plugin.Logger(ctx).Error("azuredevops_git_repository.getRepositoryDefaultBranch", "client_error", err)
+		return nil, err
+	}
+
+	input := git.GetBranchArgs{
+		RepositoryId: types.String(repo.Id.String()),
+		Name:         types.String(*repo.DefaultBranch),
+	}
+
+	branch, err := client.GetBranch(ctx, input)
+	if err != nil {
+		// A repository with no branches (e.g. an empty/uninitialized repo)
+		// returns VS403403 "Cannot find any branches". Leave the column null.
+		if isNoBranchesError(err) {
+			return nil, nil
+		}
+		plugin.Logger(ctx).Error("azuredevops_git_repository.getRepositoryDefaultBranch", "api_error", err)
+		return nil, err
+	}
+
+	return branch, nil
+}
+
+// isNoBranchesError returns true when the given error indicates that a
+// repository has no branches to resolve (e.g. an empty or uninitialized
+// repository), in which case branch lookups should be treated as absent
+// rather than as a hard failure.
+func isNoBranchesError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "vs403403") ||
+		strings.Contains(msg, "cannot find any branches") ||
+		strings.Contains(msg, "no branches exist")
 }
