@@ -22,6 +22,14 @@ func qualString(d *plugin.QueryData, column string) string {
 	return d.EqualsQuals[column].GetStringValue()
 }
 
+// qualInt reports whether an equals qual was supplied for an integer column.
+func qualInt(d *plugin.QueryData, column string) (int64, bool) {
+	if d == nil || d.EqualsQuals[column] == nil {
+		return 0, false
+	}
+	return d.EqualsQuals[column].GetInt64Value(), true
+}
+
 func commonColumns(c []*plugin.Column) []*plugin.Column {
 	return append([]*plugin.Column{
 		{

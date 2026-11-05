@@ -87,7 +87,7 @@ type Pipeline struct {
 
 func listPipelines(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	project := h.Item.(core.TeamProjectReference)
-	project_id := d.EqualsQuals["project_id"].GetStringValue()
+	project_id := qualString(d, "project_id")
 
 	// check if the provided project_id is not matching with the parentHydrate
 	if project_id != "" && project_id != project.Id.String() {

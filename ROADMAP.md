@@ -44,13 +44,15 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 
 ## Stage 3 — Build & Release (deepen existing)
 
-- [ ] `azuredevops_build_timeline` — `build.GetBuildTimeline`
-- [ ] `azuredevops_build_log` — `build.GetBuildLogs`
-- [ ] `azuredevops_build_artifact` — `build.GetArtifacts`
-- [ ] `azuredevops_release_definition` — `release.GetReleaseDefinitions`
-- [ ] `azuredevops_release_environment` / `release_approval` — `release` package
-- [ ] `azuredevops_pipeline_run` — `pipelines.ListRuns`
-- [ ] `azuredevops_pipeline_check` / `pipeline_approval` — `pipelineschecks` / `pipelinesapproval`
+- [x] `azuredevops_build_timeline` — `build.GetBuildTimeline` (requires `project_id` and `build_id`)
+- [x] `azuredevops_build_log` — `build.GetBuildLogs` (metadata only; requires `project_id` and `build_id`)
+- [x] `azuredevops_build_artifact` — `build.GetArtifacts` (requires `project_id` and `build_id`)
+- [x] `azuredevops_release_definition` — `release.GetReleaseDefinitions`
+- [x] `azuredevops_release_environment` — environments expanded on `release.GetReleases`
+- [x] `azuredevops_release_approval` — `release.GetApprovals` (pending, approved, rejected, canceled, skipped, reassigned)
+- [x] `azuredevops_pipeline_run` — `pipelines.ListRuns` (requires `project_id` and `pipeline_id`)
+- [x] `azuredevops_pipeline_check` — `pipelineschecks.GetCheckConfigurationsOnResource` (requires `project_id`, `resource_type`, and `resource_id`)
+- [x] `azuredevops_pipeline_approval` — `pipelinesapproval.QueryApprovals` (requires `project_id` and `id`; Server 2022 does not list approvals without an id)
 
 ---
 
