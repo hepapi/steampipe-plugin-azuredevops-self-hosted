@@ -102,8 +102,8 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 - [x] `azuredevops_code_search_result` — `search`
 - [ ] `azuredevops_audit_log` — `audit` (implemented; this Server 2022.1 collection does not register the API)
 - [x] `azuredevops_extension` — `extensionmanagement`
-- [ ] `azuredevops_agent_pool` / `azuredevops_agent` — `taskagent`
-- [ ] `azuredevops_variable_group` — `taskagent` / `distributedtaskcommon`
+- [x] `azuredevops_agent_pool` / `azuredevops_agent` — `taskagent`
+- [x] `azuredevops_variable_group` — `taskagent`
 
 ---
 
