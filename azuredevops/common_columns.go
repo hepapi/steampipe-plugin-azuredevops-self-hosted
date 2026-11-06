@@ -30,6 +30,14 @@ func qualInt(d *plugin.QueryData, column string) (int64, bool) {
 	return d.EqualsQuals[column].GetInt64Value(), true
 }
 
+// qualBool reports whether an equals qual was supplied for a boolean column.
+func qualBool(d *plugin.QueryData, column string) (bool, bool) {
+	if d == nil || d.EqualsQuals[column] == nil {
+		return false, false
+	}
+	return d.EqualsQuals[column].GetBoolValue(), true
+}
+
 func commonColumns(c []*plugin.Column) []*plugin.Column {
 	return append([]*plugin.Column{
 		{

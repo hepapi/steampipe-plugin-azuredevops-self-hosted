@@ -60,6 +60,8 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_test_case":                    tableAzureDevOpsTestCase(ctx),
 			"azuredevops_test_plan":                    tableAzureDevOpsTestPlan(ctx),
 			"azuredevops_test_point":                   tableAzureDevOpsTestPoint(ctx),
+			"azuredevops_test_result":                  tableAzureDevOpsTestResult(ctx),
+			"azuredevops_test_run":                     tableAzureDevOpsTestRun(ctx),
 			"azuredevops_test_suite":                   tableAzureDevOpsTestSuite(ctx),
 			"azuredevops_user":                         tableAzureDevOpsUser(ctx),
 			"azuredevops_work_item":                    tableAzureDevOpsWorkItem(ctx),

@@ -73,8 +73,8 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 - [x] `azuredevops_test_plan` — `testplan`
 - [x] `azuredevops_test_suite` — `testplan`
 - [x] `azuredevops_test_case` — `testplan`
-- [ ] `azuredevops_test_run` — `testresults`
-- [ ] `azuredevops_test_result` — `testresults`
+- [x] `azuredevops_test_run` — `test` (`GetTestRuns`; the `testresults` package is logs and metadata)
+- [x] `azuredevops_test_result` — `test` (`GetTestResults`)
 - [x] `azuredevops_test_point` — `testplan`
 
 ---
