@@ -90,9 +90,9 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 
 ## Stage 7 — Artifacts / Packages
 
-- [ ] `azuredevops_feed` — `feed`
-- [ ] `azuredevops_package` — `feed` / `packagingshared`
-- [ ] `azuredevops_package_version` — `feed`
+- [x] `azuredevops_feed` — `feed`
+- [x] `azuredevops_package` — `feed` (`GetPackages`; both collection feeds are empty)
+- [x] `azuredevops_package_version` — `feed` (`GetPackageVersions`; not row-verified, the feeds have no packages)
 
 ---
 
@@ -111,7 +111,7 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 
 Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depending on edition/licensing. Validate each against the live collection before committing; mark unavailable ones here:
 
-- `feed` / `packagingshared` (Azure Artifacts) — may require a licensed Artifacts extension.
+- `feed` / `packagingshared` (Azure Artifacts) — feeds are available on this collection. The two collection feeds have no packages, so package versions were not row-verified. Project feeds need `project_id`.
 - `search` — requires the Code Search extension.
 - `audit` — audit log streaming may be limited on self-hosted.
 - `testplan` — Test Plans may require a separate license.
