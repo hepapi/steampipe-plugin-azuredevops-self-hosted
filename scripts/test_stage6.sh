@@ -78,7 +78,7 @@ note_skip() {
   return 2
 }
 
-identity_sql="select id, descriptor, subject_descriptor, provider_display_name, is_container from azuredevops_identity where search_filter = 'LocalGroupName' and filter_value = 'Project Collection Administrators' limit 5;"
+identity_sql="select id, descriptor, subject_descriptor, provider_display_name, is_container from azuredevopssh_identity where search_filter = 'LocalGroupName' and filter_value = 'Project Collection Administrators' limit 5;"
 
 run_identity() {
   run_sql "identity" "$identity_sql"
@@ -86,18 +86,18 @@ run_identity() {
 
 run_identity_by_id() {
   local row
-  row="$(query_row "select id from azuredevops_identity where search_filter = 'LocalGroupName' and filter_value = 'Project Collection Administrators' limit 1;" || true)"
+  row="$(query_row "select id from azuredevopssh_identity where search_filter = 'LocalGroupName' and filter_value = 'Project Collection Administrators' limit 1;" || true)"
   row="${row// /}"
   if [[ -z "$row" ]]; then
     note_skip "identity_by_id" "no identity matched filter_value"
     return 2
   fi
-  run_sql "identity_by_id" "select id, provider_display_name, is_active, is_container from azuredevops_identity where id = '${row}';"
+  run_sql "identity_by_id" "select id, provider_display_name, is_active, is_container from azuredevopssh_identity where id = '${row}';"
 }
 
 run_group_membership() {
   local row subject descriptor
-  row="$(query_row "select subject_descriptor, descriptor from azuredevops_identity where search_filter = 'LocalGroupName' and filter_value = 'Project Collection Administrators' and is_container = true limit 1;" || true)"
+  row="$(query_row "select subject_descriptor, descriptor from azuredevopssh_identity where search_filter = 'LocalGroupName' and filter_value = 'Project Collection Administrators' and is_container = true limit 1;" || true)"
   if [[ -z "$row" ]]; then
     note_skip "group_membership" "no group identity to read"
     return 2
@@ -112,15 +112,15 @@ run_group_membership() {
     note_skip "group_membership" "identity has no descriptor"
     return 2
   fi
-  run_sql "group_membership" "select container_descriptor, member_descriptor, direction from azuredevops_group_membership where subject_descriptor = '${subject}' limit 5;"
+  run_sql "group_membership" "select container_descriptor, member_descriptor, direction from azuredevopssh_group_membership where subject_descriptor = '${subject}' limit 5;"
 }
 
 run_member_entitlement() {
-  run_sql_or_unavailable "member_entitlement" "select id, display_name, account_license_type, license_display_name from azuredevops_member_entitlement limit 5;"
+  run_sql_or_unavailable "member_entitlement" "select id, display_name, account_license_type, license_display_name from azuredevopssh_member_entitlement limit 5;"
 }
 
 run_user_entitlement() {
-  run_sql_or_unavailable "user_entitlement" "select id, display_name, principal_name, account_license_type, license_display_name from azuredevops_user_entitlement limit 5;"
+  run_sql_or_unavailable "user_entitlement" "select id, display_name, principal_name, account_license_type, license_display_name from azuredevopssh_user_entitlement limit 5;"
 }
 
 record() {

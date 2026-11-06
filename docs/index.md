@@ -26,7 +26,7 @@ select
   state,
   visibility
 from
-  azuredevops_project;
+  azuredevopssh_project;
 ```
 
 ```
@@ -78,7 +78,7 @@ connection "azuredevops" {
   # organization_url = "https://dev.azure.com/test"
 
   # `server_url`: Azure DevOps Server root URL (self-hosted only, optional).
-  # Used only by the `azuredevops_project_collection` table to enumerate collections.
+  # Used only by the `azuredevopssh_project_collection` table to enumerate collections.
   # When unset, it is derived from `organization_url` by stripping the last path segment.
   # server_url = "https://code.digiturk.net/"
 
@@ -105,7 +105,7 @@ export AZDO_ORG_SERVICE_URL=https://code.digiturk.net/SCMPOCCollection
 export AZDO_PERSONAL_ACCESS_TOKEN=...
 ```
 
-To enumerate all collections on the server, use the `azuredevops_project_collection` table. It uses the `server_url` (or derives it from `organization_url` by stripping the collection path segment):
+To enumerate all collections on the server, use the `azuredevopssh_project_collection` table. It uses the `server_url` (or derives it from `organization_url` by stripping the collection path segment):
 
 ```sql
 select
@@ -113,5 +113,5 @@ select
   name,
   url
 from
-  azuredevops_project_collection;
+  azuredevopssh_project_collection;
 ```

@@ -19,14 +19,14 @@ set -euo pipefail
 # references the table and returns a small row set.
 build_queries() {
   cat <<'EOF'
-pull_request|select pull_request_id, repository_id, status, title from azuredevops_git_pull_request order by pull_request_id limit 5;
-pull_request_thread|select pull_request_id, repository_id, thread_id, status from azuredevops_git_pull_request_thread order by thread_id limit 5;
-pull_request_comment|select pull_request_id, repository_id, thread_id, comment_type, content from azuredevops_git_pull_request_comment order by thread_id limit 5;
-pull_request_reviewer|select pull_request_id, repository_id, reviewer_id, display_name, vote from azuredevops_git_pull_request_reviewer order by pull_request_id limit 5;
-commit|select commit_id, repository_id, author_name, author_email from azuredevops_git_commit order by commit_id limit 5;
-ref|select repository_id, project_id, name, object_id, is_locked from azuredevops_git_ref order by name limit 5;
-tag|select repository_id, project_id, name, message from azuredevops_git_tag order by name limit 5;
-repo_enriched|select name, project_id, project_name, default_branch, is_disabled from azuredevops_git_repository order by name limit 100;
+pull_request|select pull_request_id, repository_id, status, title from azuredevopssh_git_pull_request order by pull_request_id limit 5;
+pull_request_thread|select pull_request_id, repository_id, thread_id, status from azuredevopssh_git_pull_request_thread order by thread_id limit 5;
+pull_request_comment|select pull_request_id, repository_id, thread_id, comment_type, content from azuredevopssh_git_pull_request_comment order by thread_id limit 5;
+pull_request_reviewer|select pull_request_id, repository_id, reviewer_id, display_name, vote from azuredevopssh_git_pull_request_reviewer order by pull_request_id limit 5;
+commit|select commit_id, repository_id, author_name, author_email from azuredevopssh_git_commit order by commit_id limit 5;
+ref|select repository_id, project_id, name, object_id, is_locked from azuredevopssh_git_ref order by name limit 5;
+tag|select repository_id, project_id, name, message from azuredevopssh_git_tag order by name limit 5;
+repo_enriched|select name, project_id, project_name, default_branch, is_disabled from azuredevopssh_git_repository order by name limit 100;
 EOF
 }
 
@@ -37,20 +37,20 @@ list_tables() {
   echo ""
   echo "==> Stage 1 tables registered by the fork"
   local names=(
-    azuredevops_git_pull_request
-    azuredevops_git_pull_request_thread
-    azuredevops_git_pull_request_comment
-    azuredevops_git_pull_request_reviewer
-    azuredevops_git_commit
-    azuredevops_git_ref
-    azuredevops_git_tag
+    azuredevopssh_git_pull_request
+    azuredevopssh_git_pull_request_thread
+    azuredevopssh_git_pull_request_comment
+    azuredevopssh_git_pull_request_reviewer
+    azuredevopssh_git_commit
+    azuredevopssh_git_ref
+    azuredevopssh_git_tag
   )
   local t
   for t in "${names[@]}"; do
     echo ""
     echo "--- $t (responds?) ---"
     # Fetch a single row so the table is exercised but never fully scanned.
-    # This is especially important for azuredevops_git_commit: a plain
+    # This is especially important for azuredevopssh_git_commit: a plain
     # count(*) would paginate every commit across every repository.
     if steampipe query "select * from $t limit 1" >/dev/null 2>&1; then
       ok "$t"

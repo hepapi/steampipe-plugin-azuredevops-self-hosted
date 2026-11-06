@@ -78,12 +78,12 @@ note_skip() {
 }
 
 run_wiki() {
-  run_sql "wiki" "select id, name, type, project_id, mapped_path from azuredevops_wiki limit 5;"
+  run_sql "wiki" "select id, name, type, project_id, mapped_path from azuredevopssh_wiki limit 5;"
 }
 
 run_wiki_page() {
   local row wiki_id project_id
-  row="$(query_row "select id, project_id from azuredevops_wiki limit 1;" || true)"
+  row="$(query_row "select id, project_id from azuredevopssh_wiki limit 1;" || true)"
   if [[ -z "$row" ]]; then
     note_skip "wiki_page" "no wiki to read"
     return 2
@@ -95,38 +95,38 @@ run_wiki_page() {
     note_skip "wiki_page" "wiki has no project"
     return 2
   fi
-  run_sql "wiki_page" "select id, path from azuredevops_wiki_page where project_id = '${project_id}' and wiki_id = '${wiki_id}' limit 5;"
+  run_sql "wiki_page" "select id, path from azuredevopssh_wiki_page where project_id = '${project_id}' and wiki_id = '${wiki_id}' limit 5;"
 }
 
 run_code_search_result() {
-  run_sql "code_search_result" "select file_name, path, project_name, repository_name from azuredevops_code_search_result where search_text = 'func' limit 3;"
+  run_sql "code_search_result" "select file_name, path, project_name, repository_name from azuredevopssh_code_search_result where search_text = 'func' limit 3;"
 }
 
 run_audit_log() {
-  run_sql_or_unavailable "audit_log" "select id, action_id, timestamp from azuredevops_audit_log limit 5;"
+  run_sql_or_unavailable "audit_log" "select id, action_id, timestamp from azuredevopssh_audit_log limit 5;"
 }
 
 run_extension() {
-  run_sql "extension" "select publisher_id, extension_id, extension_name, version from azuredevops_extension limit 5;"
+  run_sql "extension" "select publisher_id, extension_id, extension_name, version from azuredevopssh_extension limit 5;"
 }
 
 run_agent_pool() {
-  run_sql "agent_pool" "select id, name, pool_type, size, is_hosted from azuredevops_agent_pool limit 5;"
+  run_sql "agent_pool" "select id, name, pool_type, size, is_hosted from azuredevopssh_agent_pool limit 5;"
 }
 
 run_agent() {
   local pool_id
-  pool_id="$(query_row "select id from azuredevops_agent_pool limit 1;" || true)"
+  pool_id="$(query_row "select id from azuredevopssh_agent_pool limit 1;" || true)"
   pool_id="${pool_id// /}"
   if [[ -z "$pool_id" ]]; then
     note_skip "agent" "no agent pool to read"
     return 2
   fi
-  run_sql "agent" "select id, pool_id, name, version, status, enabled from azuredevops_agent where pool_id = ${pool_id} limit 5;"
+  run_sql "agent" "select id, pool_id, name, version, status, enabled from azuredevopssh_agent where pool_id = ${pool_id} limit 5;"
 }
 
 run_variable_group() {
-  run_sql "variable_group" "select id, project_id, name, type, is_shared from azuredevops_variable_group limit 5;"
+  run_sql "variable_group" "select id, project_id, name, type, is_shared from azuredevopssh_variable_group limit 5;"
 }
 
 record() {

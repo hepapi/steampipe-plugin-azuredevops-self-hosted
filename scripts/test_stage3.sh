@@ -24,9 +24,9 @@ set -euo pipefail
 # "<label>|<sql>".
 build_queries() {
   cat <<'EOF'
-release_definition|select project_id, id, name, path from azuredevops_release_definition limit 5;
-release_environment|select project_id, release_id, id, name, status from azuredevops_release_environment limit 5;
-release_approval|select project_id, id, status, approval_type, release_id from azuredevops_release_approval limit 5;
+release_definition|select project_id, id, name, path from azuredevopssh_release_definition limit 5;
+release_environment|select project_id, release_id, id, name, status from azuredevopssh_release_environment limit 5;
+release_approval|select project_id, id, status, approval_type, release_id from azuredevopssh_release_approval limit 5;
 EOF
 }
 
@@ -60,7 +60,7 @@ run_sql() {
 
 lookup_build() {
   local row
-  row="$(query_row "select id, project_id from azuredevops_build limit 1;" || true)"
+  row="$(query_row "select id, project_id from azuredevopssh_build limit 1;" || true)"
   if [[ -z "$row" ]]; then
     return 1
   fi
@@ -78,20 +78,20 @@ run_build_child() {
   fi
   case "$label" in
     build_timeline)
-      run_sql "$label" "select id, name, type, state, result from azuredevops_build_timeline where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} limit 5;"
+      run_sql "$label" "select id, name, type, state, result from azuredevopssh_build_timeline where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} limit 5;"
       ;;
     build_log)
-      run_sql "$label" "select id, type, line_count, url from azuredevops_build_log where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} limit 5;"
+      run_sql "$label" "select id, type, line_count, url from azuredevopssh_build_log where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} limit 5;"
       ;;
     build_artifact)
-      run_sql "$label" "select id, name, source from azuredevops_build_artifact where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} limit 5;"
+      run_sql "$label" "select id, name, source from azuredevopssh_build_artifact where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} limit 5;"
       ;;
   esac
 }
 
 run_pipeline_run() {
   local row pipeline_id project_id
-  row="$(query_row "select id, project_id from azuredevops_pipeline limit 1;" || true)"
+  row="$(query_row "select id, project_id from azuredevopssh_pipeline limit 1;" || true)"
   if [[ -z "$row" ]]; then
     echo ""
     echo "--- pipeline_run ---"
@@ -100,7 +100,7 @@ run_pipeline_run() {
   fi
   IFS=',' read -r pipeline_id project_id <<<"$row"
   project_id="${project_id// /}"
-  run_sql "pipeline_run" "select id, name, state, result from azuredevops_pipeline_run where project_id = '${project_id}' and pipeline_id = ${pipeline_id} limit 5;"
+  run_sql "pipeline_run" "select id, name, state, result from azuredevopssh_pipeline_run where project_id = '${project_id}' and pipeline_id = ${pipeline_id} limit 5;"
 }
 
 run_pipeline_approval() {
@@ -114,10 +114,10 @@ run_pipeline_approval() {
     return 1
   fi
   local approval_id
-  approval_id="$(query_row "select id from azuredevops_build_timeline where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} and type = 'Checkpoint.Approval' limit 1;" || true)"
+  approval_id="$(query_row "select id from azuredevopssh_build_timeline where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} and type = 'Checkpoint.Approval' limit 1;" || true)"
   approval_id="${approval_id// /}"
   if [[ -z "$approval_id" ]]; then
-    approval_id="$(query_row "select id from azuredevops_build_timeline where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} and type = 'Checkpoint' limit 1;" || true)"
+    approval_id="$(query_row "select id from azuredevopssh_build_timeline where project_id = '${BUILD_PROJECT_ID}' and build_id = ${BUILD_ID} and type = 'Checkpoint' limit 1;" || true)"
     approval_id="${approval_id// /}"
   fi
   if [[ -z "$approval_id" ]]; then
@@ -126,12 +126,12 @@ run_pipeline_approval() {
     bad "pipeline_approval (no timeline record to use as an approval id)"
     return 1
   fi
-  run_sql "pipeline_approval" "select id, status, min_required_approvers from azuredevops_pipeline_approval where project_id = '${BUILD_PROJECT_ID}' and id = '${approval_id}' limit 5;"
+  run_sql "pipeline_approval" "select id, status, min_required_approvers from azuredevopssh_pipeline_approval where project_id = '${BUILD_PROJECT_ID}' and id = '${approval_id}' limit 5;"
 }
 
 run_pipeline_check() {
   local row resource_id project_id
-  row="$(query_row "select id, project_id from azuredevops_serviceendpoint limit 1;" || true)"
+  row="$(query_row "select id, project_id from azuredevopssh_serviceendpoint limit 1;" || true)"
   if [[ -z "$row" ]]; then
     echo ""
     echo "--- pipeline_check ---"
@@ -140,7 +140,7 @@ run_pipeline_check() {
   fi
   IFS=',' read -r resource_id project_id <<<"$row"
   project_id="${project_id// /}"
-  run_sql "pipeline_check" "select id, type_name, resource_name, timeout from azuredevops_pipeline_check where project_id = '${project_id}' and resource_type = 'endpoint' and resource_id = '${resource_id}' limit 5;"
+  run_sql "pipeline_check" "select id, type_name, resource_name, timeout from azuredevopssh_pipeline_check where project_id = '${project_id}' and resource_type = 'endpoint' and resource_id = '${resource_id}' limit 5;"
 }
 
 list_tables() {
@@ -148,9 +148,9 @@ list_tables() {
   echo "==> Stage 3 tables registered by the fork"
   echo "    Tables that require ids are checked with the lookup queries in a full run."
   local names=(
-    azuredevops_release_definition
-    azuredevops_release_environment
-    azuredevops_release_approval
+    azuredevopssh_release_definition
+    azuredevopssh_release_environment
+    azuredevopssh_release_approval
   )
   local t
   for t in "${names[@]}"; do

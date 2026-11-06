@@ -13,7 +13,7 @@
 #
 # Requires `steampipe` on PATH and a configured `azuredevops` connection.
 #
-# azuredevops_work_item is the only Stage 4 table implemented so far.
+# azuredevopssh_work_item is the only Stage 4 table implemented so far.
 # Queries are scoped to one project. work_item_by_id is skipped when that
 # project has no work items.
 # ============================================================================
@@ -49,7 +49,7 @@ run_sql() {
 
 lookup_project() {
   local row
-  row="$(query_row "select id from azuredevops_project limit 1;" || true)"
+  row="$(query_row "select id from azuredevopssh_project limit 1;" || true)"
   if [[ -z "$row" ]]; then
     return 1
   fi
@@ -63,7 +63,7 @@ run_work_item() {
     bad "work_item (no project to read)"
     return 1
   fi
-  run_sql "work_item" "select id, title, work_item_type, state, assigned_to_name, changed_date from azuredevops_work_item where project_id = '${PROJECT_ID}' limit 5;"
+  run_sql "work_item" "select id, title, work_item_type, state, assigned_to_name, changed_date from azuredevopssh_work_item where project_id = '${PROJECT_ID}' limit 5;"
 }
 
 skip() { printf '\033[1;33m  skip\033[0m %s\n' "$*"; }
@@ -76,7 +76,7 @@ run_work_item_by_id() {
     return 1
   fi
   local work_item_id
-  work_item_id="$(query_row "select id from azuredevops_work_item where project_id = '${PROJECT_ID}' limit 1;" || true)"
+  work_item_id="$(query_row "select id from azuredevopssh_work_item where project_id = '${PROJECT_ID}' limit 1;" || true)"
   work_item_id="${work_item_id// /}"
   if [[ -z "$work_item_id" ]]; then
     echo ""
@@ -84,7 +84,7 @@ run_work_item_by_id() {
     skip "work_item_by_id (no work items in project ${PROJECT_ID})"
     return 2
   fi
-  run_sql "work_item_by_id" "select id, rev, project_id, title, work_item_type, state, url from azuredevops_work_item where project_id = '${PROJECT_ID}' and id = ${work_item_id};"
+  run_sql "work_item_by_id" "select id, rev, project_id, title, work_item_type, state, url from azuredevopssh_work_item where project_id = '${PROJECT_ID}' and id = ${work_item_id};"
 }
 
 list_tables() {
@@ -93,16 +93,16 @@ list_tables() {
   echo "    Queries are scoped to one project so they do not scan the collection."
   if ! lookup_project; then
     echo ""
-    echo "--- azuredevops_work_item (responds?) ---"
-    bad "azuredevops_work_item (no project to read)"
+    echo "--- azuredevopssh_work_item (responds?) ---"
+    bad "azuredevopssh_work_item (no project to read)"
     return 1
   fi
   echo ""
-  echo "--- azuredevops_work_item (responds?) ---"
-  if steampipe query "select * from azuredevops_work_item where project_id = '${PROJECT_ID}' limit 1" >/dev/null 2>&1; then
-    ok "azuredevops_work_item"
+  echo "--- azuredevopssh_work_item (responds?) ---"
+  if steampipe query "select * from azuredevopssh_work_item where project_id = '${PROJECT_ID}' limit 1" >/dev/null 2>&1; then
+    ok "azuredevopssh_work_item"
   else
-    bad "azuredevops_work_item"
+    bad "azuredevopssh_work_item"
     return 1
   fi
 }

@@ -52,7 +52,7 @@ select
   state,
   visibility
 from
-  azuredevops_project;
+  azuredevopssh_project;
 ```
 
 ```

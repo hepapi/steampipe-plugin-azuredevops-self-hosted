@@ -23,9 +23,9 @@ set -euo pipefail
 # "<label>|<sql>".
 build_queries() {
   cat <<'EOF'
-policy_type|select project_id, id, display_name from azuredevops_policy_type order by display_name limit 5;
-security_namespace|select namespace_id, name, display_name from azuredevops_security_namespace order by name limit 20;
-servicehook_subscription|select id, publisher_id, event_type, consumer_id, status from azuredevops_servicehook_subscription limit 10;
+policy_type|select project_id, id, display_name from azuredevopssh_policy_type order by display_name limit 5;
+security_namespace|select namespace_id, name, display_name from azuredevopssh_security_namespace order by name limit 20;
+servicehook_subscription|select id, publisher_id, event_type, consumer_id, status from azuredevopssh_servicehook_subscription limit 10;
 EOF
 }
 
@@ -60,21 +60,21 @@ query_value() {
 
 run_permission() {
   local namespace_id
-  namespace_id="$(query_value "select namespace_id from azuredevops_security_namespace where name = 'Git Repositories' limit 1;" || true)"
+  namespace_id="$(query_value "select namespace_id from azuredevopssh_security_namespace where name = 'Git Repositories' limit 1;" || true)"
   if [[ -z "$namespace_id" ]]; then
     echo ""
     echo "--- permission ---"
     bad "permission (no Git Repositories security namespace)"
     return 1
   fi
-  run_sql "permission" "select namespace_name, token, descriptor, allow, deny from azuredevops_permission where namespace_id = '${namespace_id}' limit 5;"
+  run_sql "permission" "select namespace_name, token, descriptor, allow, deny from azuredevopssh_permission where namespace_id = '${namespace_id}' limit 5;"
 }
 
 run_policy_evaluation() {
   # artifact_id is often null on the pull request row. Build the Code Review
   # artifact id the policy API expects when the column is empty.
   local row project_id pull_request_id artifact_id
-  row="$(steampipe query --output csv --header=false "select project_id, pull_request_id, coalesce(nullif(artifact_id, ''), 'vstfs:///CodeReview/CodeReviewId/' || project_id || '/' || pull_request_id::text) from azuredevops_git_pull_request limit 1;" 2>/dev/null | head -n 1 || true)"
+  row="$(steampipe query --output csv --header=false "select project_id, pull_request_id, coalesce(nullif(artifact_id, ''), 'vstfs:///CodeReview/CodeReviewId/' || project_id || '/' || pull_request_id::text) from azuredevopssh_git_pull_request limit 1;" 2>/dev/null | head -n 1 || true)"
   if [[ -z "$row" ]]; then
     echo ""
     echo "--- policy_evaluation ---"
@@ -86,16 +86,16 @@ run_policy_evaluation() {
   pull_request_id="${pull_request_id//\"/}"
   artifact_id="${artifact_id//\"/}"
   artifact_id="${artifact_id//$'\r'/}"
-  run_sql "policy_evaluation" "select id, status, policy_type_display_name, is_enabled, is_blocking from azuredevops_policy_evaluation where project_id = '${project_id}' and artifact_id = '${artifact_id}' limit 10;"
+  run_sql "policy_evaluation" "select id, status, policy_type_display_name, is_enabled, is_blocking from azuredevopssh_policy_evaluation where project_id = '${project_id}' and artifact_id = '${artifact_id}' limit 10;"
 }
 
 list_tables() {
   echo ""
   echo "==> Stage 2 tables registered by the fork"
   local names=(
-    azuredevops_policy_type
-    azuredevops_security_namespace
-    azuredevops_servicehook_subscription
+    azuredevopssh_policy_type
+    azuredevopssh_security_namespace
+    azuredevopssh_servicehook_subscription
   )
   local t
   for t in "${names[@]}"; do

@@ -9,7 +9,7 @@ connection "azuredevops" {
   # organization_url = "https://dev.azure.com/test"
 
   # `server_url`: Azure DevOps Server root URL (self-hosted only, optional).
-  # Used only by the `azuredevops_project_collection` table to enumerate collections.
+  # Used only by the `azuredevopssh_project_collection` table to enumerate collections.
   # When unset, it is derived from `organization_url` by stripping the last path segment.
   # For self-hosted, e.g. https://code.digiturk.net/
   # server_url = "https://code.digiturk.net/"

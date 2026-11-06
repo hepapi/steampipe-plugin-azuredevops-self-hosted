@@ -14,96 +14,96 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 - [x] Migrate from v6 to v7 go client
 - [x] Fix `organization` column derivation for self-hosted URLs (collection name)
 - [x] Add `server_url` config + `getServerURL`/`getServerConnection` helpers
-- [x] `azuredevops_project_collection` — `core.GetProjectCollections` / `GetProjectCollection`
-- [x] `azuredevops_git_repository_branch_policy` — `policy.GetPolicyConfigurations` / `GetPolicyConfiguration`
+- [x] `azuredevopssh_project_collection` — `core.GetProjectCollections` / `GetProjectCollection`
+- [x] `azuredevopssh_git_repository_branch_policy` — `policy.GetPolicyConfigurations` / `GetPolicyConfiguration`
 
 ---
 
 ## Stage 1 — Git & Code (pairs with branch policies)
 
-- [x] `azuredevops_git_pull_request` — `git.GetPullRequests`
-- [x] `azuredevops_git_pull_request_thread` — `git.GetThreads`
-- [x] `azuredevops_git_pull_request_comment` — `git.GetComments`
-- [x] `azuredevops_git_pull_request_reviewer` — `git.GetPullRequestReviewers`
-- [x] `azuredevops_git_commit` — `git.GetCommits`
-- [x] `azuredevops_git_ref` — `git.GetRefs`
-- [x] `azuredevops_git_tag` — `git.GetAnnotatedTags`
-- [x] Enrich `azuredevops_git_repository` (project name, default branch object, `is_disabled`)
+- [x] `azuredevopssh_git_pull_request` — `git.GetPullRequests`
+- [x] `azuredevopssh_git_pull_request_thread` — `git.GetThreads`
+- [x] `azuredevopssh_git_pull_request_comment` — `git.GetComments`
+- [x] `azuredevopssh_git_pull_request_reviewer` — `git.GetPullRequestReviewers`
+- [x] `azuredevopssh_git_commit` — `git.GetCommits`
+- [x] `azuredevopssh_git_ref` — `git.GetRefs`
+- [x] `azuredevopssh_git_tag` — `git.GetAnnotatedTags`
+- [x] Enrich `azuredevopssh_git_repository` (project name, default branch object, `is_disabled`)
 
 ---
 
 ## Stage 2 — Policy & Security
 
-- [x] `azuredevops_policy_type` — `policy.GetPolicyTypes`
-- [x] `azuredevops_policy_evaluation` — `policy.GetPolicyEvaluations`
-- [x] `azuredevops_security_namespace` — `security.QuerySecurityNamespaces`
-- [x] `azuredevops_permission` / ACLs — `security.QueryAccessControlLists`
-- [x] `azuredevops_servicehook_subscription` — `servicehooks.ListSubscriptions`
+- [x] `azuredevopssh_policy_type` — `policy.GetPolicyTypes`
+- [x] `azuredevopssh_policy_evaluation` — `policy.GetPolicyEvaluations`
+- [x] `azuredevopssh_security_namespace` — `security.QuerySecurityNamespaces`
+- [x] `azuredevopssh_permission` / ACLs — `security.QueryAccessControlLists`
+- [x] `azuredevopssh_servicehook_subscription` — `servicehooks.ListSubscriptions`
 
 ---
 
 ## Stage 3 — Build & Release (deepen existing)
 
-- [x] `azuredevops_build_timeline` — `build.GetBuildTimeline` (requires `project_id` and `build_id`)
-- [x] `azuredevops_build_log` — `build.GetBuildLogs` (metadata only; requires `project_id` and `build_id`)
-- [x] `azuredevops_build_artifact` — `build.GetArtifacts` (requires `project_id` and `build_id`)
-- [x] `azuredevops_release_definition` — `release.GetReleaseDefinitions`
-- [x] `azuredevops_release_environment` — environments expanded on `release.GetReleases`
-- [x] `azuredevops_release_approval` — `release.GetApprovals` (pending, approved, rejected, canceled, skipped, reassigned)
-- [x] `azuredevops_pipeline_run` — `pipelines.ListRuns` (requires `project_id` and `pipeline_id`)
-- [x] `azuredevops_pipeline_check` — `pipelineschecks.GetCheckConfigurationsOnResource` (requires `project_id`, `resource_type`, and `resource_id`)
-- [x] `azuredevops_pipeline_approval` — `pipelinesapproval.QueryApprovals` (requires `project_id` and `id`; Server 2022 does not list approvals without an id)
+- [x] `azuredevopssh_build_timeline` — `build.GetBuildTimeline` (requires `project_id` and `build_id`)
+- [x] `azuredevopssh_build_log` — `build.GetBuildLogs` (metadata only; requires `project_id` and `build_id`)
+- [x] `azuredevopssh_build_artifact` — `build.GetArtifacts` (requires `project_id` and `build_id`)
+- [x] `azuredevopssh_release_definition` — `release.GetReleaseDefinitions`
+- [x] `azuredevopssh_release_environment` — environments expanded on `release.GetReleases`
+- [x] `azuredevopssh_release_approval` — `release.GetApprovals` (pending, approved, rejected, canceled, skipped, reassigned)
+- [x] `azuredevopssh_pipeline_run` — `pipelines.ListRuns` (requires `project_id` and `pipeline_id`)
+- [x] `azuredevopssh_pipeline_check` — `pipelineschecks.GetCheckConfigurationsOnResource` (requires `project_id`, `resource_type`, and `resource_id`)
+- [x] `azuredevopssh_pipeline_approval` — `pipelinesapproval.QueryApprovals` (requires `project_id` and `id`; Server 2022 does not list approvals without an id)
 
 ---
 
 ## Stage 4 — Work Item Tracking
 
-- [ ] `azuredevops_work_item` — `workitemtracking.GetWorkItems` / `GetWorkItemsBatch`
-- [ ] `azuredevops_work_item_type` — `workitemtracking.GetWorkItemTypes`
-- [ ] `azuredevops_work_item_comment` — `workitemtracking.GetComments`
-- [ ] `azuredevops_work_item_revision` — `workitemtracking.GetWorkItemRevisions`
-- [ ] `azuredevops_work_item_relation` — `workitemtracking.GetWorkItemRelations`
-- [ ] `azuredevops_work_item_field` — `workitemtracking.GetFields`
-- [ ] `azuredevops_work_item_query` — `workitemtracking.QueryByWiql`
+- [ ] `azuredevopssh_work_item` — `workitemtracking.GetWorkItems` / `GetWorkItemsBatch`
+- [ ] `azuredevopssh_work_item_type` — `workitemtracking.GetWorkItemTypes`
+- [ ] `azuredevopssh_work_item_comment` — `workitemtracking.GetComments`
+- [ ] `azuredevopssh_work_item_revision` — `workitemtracking.GetWorkItemRevisions`
+- [ ] `azuredevopssh_work_item_relation` — `workitemtracking.GetWorkItemRelations`
+- [ ] `azuredevopssh_work_item_field` — `workitemtracking.GetFields`
+- [ ] `azuredevopssh_work_item_query` — `workitemtracking.QueryByWiql`
 
 ---
 
 ## Stage 5 — Test & Quality
 
-- [x] `azuredevops_test_plan` — `testplan`
-- [x] `azuredevops_test_suite` — `testplan`
-- [x] `azuredevops_test_case` — `testplan`
-- [x] `azuredevops_test_run` — `test` (`GetTestRuns`; the `testresults` package is logs and metadata)
-- [x] `azuredevops_test_result` — `test` (`GetTestResults`)
-- [x] `azuredevops_test_point` — `testplan`
+- [x] `azuredevopssh_test_plan` — `testplan`
+- [x] `azuredevopssh_test_suite` — `testplan`
+- [x] `azuredevopssh_test_case` — `testplan`
+- [x] `azuredevopssh_test_run` — `test` (`GetTestRuns`; the `testresults` package is logs and metadata)
+- [x] `azuredevopssh_test_result` — `test` (`GetTestResults`)
+- [x] `azuredevopssh_test_point` — `testplan`
 
 ---
 
 ## Stage 6 — Identity, Permissions & Entitlements
 
-- [ ] `azuredevops_member_entitlement` — `memberentitlementmanagement` (implemented; this Server 2022.1 collection does not register the API)
-- [x] `azuredevops_group_membership` — `graph`, with an Identity `queryMembership=direct` fallback when the graph location is not registered
-- [ ] `azuredevops_user_entitlement` — `memberentitlementmanagement` (implemented; this Server 2022.1 collection does not register the API)
-- [x] `azuredevops_identity` — `identity` (`/_apis/identities` when the v7 location id is not registered)
+- [ ] `azuredevopssh_member_entitlement` — `memberentitlementmanagement` (implemented; this Server 2022.1 collection does not register the API)
+- [x] `azuredevopssh_group_membership` — `graph`, with an Identity `queryMembership=direct` fallback when the graph location is not registered
+- [ ] `azuredevopssh_user_entitlement` — `memberentitlementmanagement` (implemented; this Server 2022.1 collection does not register the API)
+- [x] `azuredevopssh_identity` — `identity` (`/_apis/identities` when the v7 location id is not registered)
 
 ---
 
 ## Stage 7 — Artifacts / Packages
 
-- [x] `azuredevops_feed` — `feed`
-- [x] `azuredevops_package` — `feed` (`GetPackages`; both collection feeds are empty)
-- [x] `azuredevops_package_version` — `feed` (`GetPackageVersions`; not row-verified, the feeds have no packages)
+- [x] `azuredevopssh_feed` — `feed`
+- [x] `azuredevopssh_package` — `feed` (`GetPackages`; both collection feeds are empty)
+- [x] `azuredevopssh_package_version` — `feed` (`GetPackageVersions`; not row-verified, the feeds have no packages)
 
 ---
 
 ## Stage 8 — Wiki, Search, Audit, Extensions, Agents
 
-- [x] `azuredevops_wiki` / `azuredevops_wiki_page` — `wiki`
-- [x] `azuredevops_code_search_result` — `search`
-- [ ] `azuredevops_audit_log` — `audit` (implemented; this Server 2022.1 collection does not register the API)
-- [x] `azuredevops_extension` — `extensionmanagement`
-- [x] `azuredevops_agent_pool` / `azuredevops_agent` — `taskagent`
-- [x] `azuredevops_variable_group` — `taskagent`
+- [x] `azuredevopssh_wiki` / `azuredevopssh_wiki_page` — `wiki`
+- [x] `azuredevopssh_code_search_result` — `search`
+- [ ] `azuredevopssh_audit_log` — `audit` (implemented; this Server 2022.1 collection does not register the API)
+- [x] `azuredevopssh_extension` — `extensionmanagement`
+- [x] `azuredevopssh_agent_pool` / `azuredevopssh_agent` — `taskagent`
+- [x] `azuredevopssh_variable_group` — `taskagent`
 
 ---
 
@@ -112,18 +112,18 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depending on edition/licensing. Validate each against the live collection before committing; mark unavailable ones here:
 
 - `feed` / `packagingshared` (Azure Artifacts) — feeds are available on this collection. The two collection feeds have no packages, so package versions were not row-verified. Project feeds need `project_id`.
-- `search` — Code Search is installed on this collection. `azuredevops_code_search_result` requires `search_text`.
-- `audit` — the audit log route is not registered on this Azure DevOps Server 2022.1 collection. `azuredevops_audit_log` is implemented for servers that expose it.
+- `search` — Code Search is installed on this collection. `azuredevopssh_code_search_result` requires `search_text`.
+- `audit` — the audit log route is not registered on this Azure DevOps Server 2022.1 collection. `azuredevopssh_audit_log` is implemented for servers that expose it.
 - `testplan` — Test Plans may require a separate license.
 - `memberentitlementmanagement` — member and user entitlement locations are not registered on this Azure DevOps Server 2022.1 collection. `/_apis/memberentitlements` and `/_apis/userentitlements` return 404. The tables are implemented for servers that expose the API.
-- `graph` — group and membership locations are not registered on this collection. `azuredevops_group_membership` reads direct membership from the Identity API when the graph location is missing. `azuredevops_group` and `azuredevops_user` still call graph.
-- `identity` — the v7 ReadIdentities location id is not registered. `azuredevops_identity` calls `/_apis/identities` (api-version 6.0). A list needs `filter_value`, `descriptor`, or `id`.
+- `graph` — group and membership locations are not registered on this collection. `azuredevopssh_group_membership` reads direct membership from the Identity API when the graph location is missing. `azuredevopssh_group` and `azuredevopssh_user` still call graph.
+- `identity` — the v7 ReadIdentities location id is not registered. `azuredevopssh_identity` calls `/_apis/identities` (api-version 6.0). A list needs `filter_value`, `descriptor`, or `id`.
 
 ---
 
 ## Implementation conventions
 
-- File/table naming: `table_azuredevops_<name>.go`, `tableAzureDevOps<Name>(ctx)`.
+- File/table naming: `table_azuredevopssh_<name>.go`, `tableAzureDevOps<Name>(ctx)`.
 - Use `commonColumns(...)` for `organization` + `title` standard columns.
 - Project-scoped tables: `ParentHydrate: listProjects` + wrapper struct carrying `ProjectId`; filter on `project_id` equals-qual before calling the API.
 - Respect `d.RowsRemaining(ctx)` and `d.QueryContext.Limit`; implement continuation-token pagination where the go client supports it.

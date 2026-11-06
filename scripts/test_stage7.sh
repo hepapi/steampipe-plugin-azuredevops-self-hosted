@@ -53,23 +53,23 @@ note_skip() {
 }
 
 run_feed() {
-  run_sql "feed" "select id, name, project_id, upstream_enabled from azuredevops_feed limit 5;"
+  run_sql "feed" "select id, name, project_id, upstream_enabled from azuredevopssh_feed limit 5;"
 }
 
 run_feed_by_id() {
   local row
-  row="$(query_row "select id from azuredevops_feed limit 1;" || true)"
+  row="$(query_row "select id from azuredevopssh_feed limit 1;" || true)"
   row="${row// /}"
   if [[ -z "$row" ]]; then
     note_skip "feed_by_id" "no feed to read"
     return 2
   fi
-  run_sql "feed_by_id" "select id, name, fully_qualified_name, upstream_enabled from azuredevops_feed where id = '${row}';"
+  run_sql "feed_by_id" "select id, name, fully_qualified_name, upstream_enabled from azuredevopssh_feed where id = '${row}';"
 }
 
 lookup_feed() {
   local row
-  row="$(query_row "select id from azuredevops_feed limit 1;" || true)"
+  row="$(query_row "select id from azuredevopssh_feed limit 1;" || true)"
   FEED_ID="${row// /}"
   [[ -n "$FEED_ID" ]]
 }
@@ -79,7 +79,7 @@ run_package() {
     note_skip "package" "no feed to read"
     return 2
   fi
-  run_sql "package" "select id, name, protocol_type from azuredevops_package where feed_id = '${FEED_ID}' limit 5;"
+  run_sql "package" "select id, name, protocol_type from azuredevopssh_package where feed_id = '${FEED_ID}' limit 5;"
 }
 
 run_package_version() {
@@ -88,13 +88,13 @@ run_package_version() {
     return 2
   fi
   local package_id
-  package_id="$(query_row "select id from azuredevops_package where feed_id = '${FEED_ID}' limit 1;" || true)"
+  package_id="$(query_row "select id from azuredevopssh_package where feed_id = '${FEED_ID}' limit 1;" || true)"
   package_id="${package_id// /}"
   if [[ -z "$package_id" ]]; then
     note_skip "package_version" "no package in feed ${FEED_ID}"
     return 2
   fi
-  run_sql "package_version" "select id, version, is_latest, is_deleted, publish_date from azuredevops_package_version where feed_id = '${FEED_ID}' and package_id = '${package_id}' limit 5;"
+  run_sql "package_version" "select id, version, is_latest, is_deleted, publish_date from azuredevopssh_package_version where feed_id = '${FEED_ID}' and package_id = '${package_id}' limit 5;"
 }
 
 record() {

@@ -58,16 +58,16 @@ note_skip() {
 }
 
 run_test_plan() {
-  run_sql "test_plan" "select id, project_id, name, state from azuredevops_test_plan limit 5;"
+  run_sql "test_plan" "select id, project_id, name, state from azuredevopssh_test_plan limit 5;"
 }
 
 run_test_run() {
-  run_sql "test_run" "select id, project_id, name, state, is_automated, total_tests, passed_tests from azuredevops_test_run limit 5;"
+  run_sql "test_run" "select id, project_id, name, state, is_automated, total_tests, passed_tests from azuredevopssh_test_run limit 5;"
 }
 
 lookup_plan() {
   local row
-  row="$(query_row "select id, project_id from azuredevops_test_plan limit 1;" || true)"
+  row="$(query_row "select id, project_id from azuredevopssh_test_plan limit 1;" || true)"
   if [[ -z "$row" ]]; then
     return 1
   fi
@@ -82,14 +82,14 @@ lookup_suite() {
     return 1
   fi
   local row
-  row="$(query_row "select id from azuredevops_test_suite where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} limit 1;" || true)"
+  row="$(query_row "select id from azuredevopssh_test_suite where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} limit 1;" || true)"
   SUITE_ID="${row// /}"
   [[ -n "$SUITE_ID" ]]
 }
 
 lookup_run() {
   local row
-  row="$(query_row "select id, project_id from azuredevops_test_run limit 1;" || true)"
+  row="$(query_row "select id, project_id from azuredevopssh_test_run limit 1;" || true)"
   if [[ -z "$row" ]]; then
     return 1
   fi
@@ -104,7 +104,7 @@ run_test_suite() {
     note_skip "test_suite" "no test plan to read"
     return 2
   fi
-  run_sql "test_suite" "select id, name, suite_type, parent_suite_id from azuredevops_test_suite where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} limit 5;"
+  run_sql "test_suite" "select id, name, suite_type, parent_suite_id from azuredevopssh_test_suite where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} limit 5;"
 }
 
 run_test_case() {
@@ -112,7 +112,7 @@ run_test_case() {
     note_skip "test_case" "no test suite to read"
     return 2
   fi
-  run_sql "test_case" "select id, name, \"order\" from azuredevops_test_case where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} and suite_id = ${SUITE_ID} limit 5;"
+  run_sql "test_case" "select id, name, \"order\" from azuredevopssh_test_case where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} and suite_id = ${SUITE_ID} limit 5;"
 }
 
 run_test_point() {
@@ -120,7 +120,7 @@ run_test_point() {
     note_skip "test_point" "no test suite to read"
     return 2
   fi
-  run_sql "test_point" "select id, test_case_name, configuration_name, outcome from azuredevops_test_point where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} and suite_id = ${SUITE_ID} limit 5;"
+  run_sql "test_point" "select id, test_case_name, configuration_name, outcome from azuredevopssh_test_point where project_id = '${PROJECT_ID}' and plan_id = ${PLAN_ID} and suite_id = ${SUITE_ID} limit 5;"
 }
 
 run_test_result() {
@@ -128,7 +128,7 @@ run_test_result() {
     note_skip "test_result" "no test run to read"
     return 2
   fi
-  run_sql "test_result" "select id, test_case_title, outcome, state from azuredevops_test_result where project_id = '${RUN_PROJECT_ID}' and run_id = ${RUN_ID} limit 5;"
+  run_sql "test_result" "select id, test_case_title, outcome, state from azuredevopssh_test_result where project_id = '${RUN_PROJECT_ID}' and run_id = ${RUN_ID} limit 5;"
 }
 
 record() {
@@ -150,7 +150,7 @@ list_tables() {
   echo ""
   echo "==> Stage 5 tables registered by the fork"
   echo "    test_plan and test_run can be listed directly. The others need parent ids."
-  local names=(azuredevops_test_plan azuredevops_test_run)
+  local names=(azuredevopssh_test_plan azuredevopssh_test_run)
   local t
   for t in "${names[@]}"; do
     echo ""
