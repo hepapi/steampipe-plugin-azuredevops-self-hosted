@@ -71,6 +71,8 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_test_suite":                   tableAzureDevOpsTestSuite(ctx),
 			"azuredevops_user":                         tableAzureDevOpsUser(ctx),
 			"azuredevops_user_entitlement":             tableAzureDevOpsUserEntitlement(ctx),
+			"azuredevops_wiki":                         tableAzureDevOpsWiki(ctx),
+			"azuredevops_wiki_page":                    tableAzureDevOpsWikiPage(ctx),
 			"azuredevops_work_item":                    tableAzureDevOpsWorkItem(ctx),
 		},
 	}

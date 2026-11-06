@@ -98,7 +98,7 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 
 ## Stage 8 — Wiki, Search, Audit, Extensions, Agents
 
-- [ ] `azuredevops_wiki` / `azuredevops_wiki_page` — `wiki`
+- [x] `azuredevops_wiki` / `azuredevops_wiki_page` — `wiki`
 - [ ] `azuredevops_code_search_result` — `search`
 - [ ] `azuredevops_audit_log` — `audit`
 - [ ] `azuredevops_extension` — `extensionmanagement`
