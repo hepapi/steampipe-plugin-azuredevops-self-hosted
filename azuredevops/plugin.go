@@ -22,11 +22,13 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			},
 		},
 		TableMap: map[string]*plugin.Table{
+			"azuredevops_audit_log":                    tableAzureDevOpsAuditLog(ctx),
 			"azuredevops_build":                        tableAzureDevOpsBuild(ctx),
 			"azuredevops_build_artifact":               tableAzureDevOpsBuildArtifact(ctx),
 			"azuredevops_build_definition":             tableAzureDevOpsBuildDefinition(ctx),
 			"azuredevops_build_log":                    tableAzureDevOpsBuildLog(ctx),
 			"azuredevops_build_timeline":               tableAzureDevOpsBuildTimeline(ctx),
+			"azuredevops_code_search_result":           tableAzureDevOpsCodeSearchResult(ctx),
 			"azuredevops_dashboard":                    tableAzureDevOpsDashboard(ctx),
 			"azuredevops_feed":                         tableAzureDevOpsFeed(ctx),
 			"azuredevops_git_commit":                   tableAzureDevOpsGitCommit(ctx),

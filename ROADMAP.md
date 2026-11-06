@@ -99,8 +99,8 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 ## Stage 8 — Wiki, Search, Audit, Extensions, Agents
 
 - [x] `azuredevops_wiki` / `azuredevops_wiki_page` — `wiki`
-- [ ] `azuredevops_code_search_result` — `search`
-- [ ] `azuredevops_audit_log` — `audit`
+- [x] `azuredevops_code_search_result` — `search`
+- [ ] `azuredevops_audit_log` — `audit` (implemented; this Server 2022.1 collection does not register the API)
 - [ ] `azuredevops_extension` — `extensionmanagement`
 - [ ] `azuredevops_agent_pool` / `azuredevops_agent` — `taskagent`
 - [ ] `azuredevops_variable_group` — `taskagent` / `distributedtaskcommon`
@@ -112,8 +112,8 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depending on edition/licensing. Validate each against the live collection before committing; mark unavailable ones here:
 
 - `feed` / `packagingshared` (Azure Artifacts) — feeds are available on this collection. The two collection feeds have no packages, so package versions were not row-verified. Project feeds need `project_id`.
-- `search` — requires the Code Search extension.
-- `audit` — audit log streaming may be limited on self-hosted.
+- `search` — Code Search is installed on this collection. `azuredevops_code_search_result` requires `search_text`.
+- `audit` — the audit log route is not registered on this Azure DevOps Server 2022.1 collection. `azuredevops_audit_log` is implemented for servers that expose it.
 - `testplan` — Test Plans may require a separate license.
 - `memberentitlementmanagement` — member and user entitlement locations are not registered on this Azure DevOps Server 2022.1 collection. `/_apis/memberentitlements` and `/_apis/userentitlements` return 404. The tables are implemented for servers that expose the API.
 - `graph` — group and membership locations are not registered on this collection. `azuredevops_group_membership` reads direct membership from the Identity API when the graph location is missing. `azuredevops_group` and `azuredevops_user` still call graph.
