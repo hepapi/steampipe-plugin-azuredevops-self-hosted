@@ -81,9 +81,9 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 
 ## Stage 6 — Identity, Permissions & Entitlements
 
-- [ ] `azuredevops_member_entitlement` — `memberentitlementmanagement`
+- [ ] `azuredevops_member_entitlement` — `memberentitlementmanagement` (implemented; this Server 2022.1 collection does not register the API)
 - [x] `azuredevops_group_membership` — `graph`, with an Identity `queryMembership=direct` fallback when the graph location is not registered
-- [ ] `azuredevops_user_entitlement` — `memberentitlementmanagement`
+- [ ] `azuredevops_user_entitlement` — `memberentitlementmanagement` (implemented; this Server 2022.1 collection does not register the API)
 - [x] `azuredevops_identity` — `identity` (`/_apis/identities` when the v7 location id is not registered)
 
 ---
@@ -115,7 +115,7 @@ Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depend
 - `search` — requires the Code Search extension.
 - `audit` — audit log streaming may be limited on self-hosted.
 - `testplan` — Test Plans may require a separate license.
-- `memberentitlementmanagement` — user entitlement management may differ on self-hosted.
+- `memberentitlementmanagement` — member and user entitlement locations are not registered on this Azure DevOps Server 2022.1 collection. `/_apis/memberentitlements` and `/_apis/userentitlements` return 404. The tables are implemented for servers that expose the API.
 - `graph` — group and membership locations are not registered on this collection. `azuredevops_group_membership` reads direct membership from the Identity API when the graph location is missing. `azuredevops_group` and `azuredevops_user` still call graph.
 - `identity` — the v7 ReadIdentities location id is not registered. `azuredevops_identity` calls `/_apis/identities` (api-version 6.0). A list needs `filter_value`, `descriptor`, or `id`.
 

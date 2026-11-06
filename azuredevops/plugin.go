@@ -41,6 +41,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_group":                        tableAzureDevOpsGroup(ctx),
 			"azuredevops_group_membership":             tableAzureDevOpsGroupMembership(ctx),
 			"azuredevops_identity":                     tableAzureDevOpsIdentity(ctx),
+			"azuredevops_member_entitlement":           tableAzureDevOpsMemberEntitlement(ctx),
 			"azuredevops_permission":                   tableAzureDevOpsPermission(ctx),
 			"azuredevops_pipeline":                     tableAzureDevOpsPipeline(ctx),
 			"azuredevops_pipeline_approval":            tableAzureDevOpsPipelineApproval(ctx),
@@ -66,6 +67,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_test_run":                     tableAzureDevOpsTestRun(ctx),
 			"azuredevops_test_suite":                   tableAzureDevOpsTestSuite(ctx),
 			"azuredevops_user":                         tableAzureDevOpsUser(ctx),
+			"azuredevops_user_entitlement":             tableAzureDevOpsUserEntitlement(ctx),
 			"azuredevops_work_item":                    tableAzureDevOpsWorkItem(ctx),
 		},
 	}
