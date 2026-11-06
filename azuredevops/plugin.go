@@ -58,6 +58,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_team":                         tableAzureDevOpsTeam(ctx),
 			"azuredevops_team_member":                  tableAzureDevOpsTeamMember(ctx),
 			"azuredevops_user":                         tableAzureDevOpsUser(ctx),
+			"azuredevops_work_item":                    tableAzureDevOpsWorkItem(ctx),
 		},
 	}
 	return p
