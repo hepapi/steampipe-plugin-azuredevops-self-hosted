@@ -30,6 +30,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_build_timeline":               tableAzureDevOpsBuildTimeline(ctx),
 			"azuredevops_code_search_result":           tableAzureDevOpsCodeSearchResult(ctx),
 			"azuredevops_dashboard":                    tableAzureDevOpsDashboard(ctx),
+			"azuredevops_extension":                    tableAzureDevOpsExtension(ctx),
 			"azuredevops_feed":                         tableAzureDevOpsFeed(ctx),
 			"azuredevops_git_commit":                   tableAzureDevOpsGitCommit(ctx),
 			"azuredevops_git_pull_request":             tableAzureDevOpsGitPullRequest(ctx),
