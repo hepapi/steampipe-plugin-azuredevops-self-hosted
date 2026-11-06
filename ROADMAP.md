@@ -84,7 +84,7 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 - [ ] `azuredevops_member_entitlement` — `memberentitlementmanagement`
 - [ ] `azuredevops_group_membership` — `graph`
 - [ ] `azuredevops_user_entitlement` — `memberentitlementmanagement`
-- [ ] `azuredevops_identity` — `identity`
+- [x] `azuredevops_identity` — `identity` (`/_apis/identities` when the v7 location id is not registered)
 
 ---
 
@@ -116,6 +116,7 @@ Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depend
 - `audit` — audit log streaming may be limited on self-hosted.
 - `testplan` — Test Plans may require a separate license.
 - `memberentitlementmanagement` — user entitlement management may differ on self-hosted.
+- `identity` — the v7 ReadIdentities location id is not registered. `azuredevops_identity` calls `/_apis/identities` (api-version 6.0). A list needs `filter_value`, `descriptor`, or `id`.
 
 ---
 
