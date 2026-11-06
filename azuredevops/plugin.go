@@ -39,6 +39,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevops_git_repository_branch_policy": tableAzureDevOpsGitRepositoryBranchPolicy(ctx),
 			"azuredevops_git_tag":                      tableAzureDevOpsGitTag(ctx),
 			"azuredevops_group":                        tableAzureDevOpsGroup(ctx),
+			"azuredevops_group_membership":             tableAzureDevOpsGroupMembership(ctx),
 			"azuredevops_identity":                     tableAzureDevOpsIdentity(ctx),
 			"azuredevops_permission":                   tableAzureDevOpsPermission(ctx),
 			"azuredevops_pipeline":                     tableAzureDevOpsPipeline(ctx),
