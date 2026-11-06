@@ -70,12 +70,12 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 
 ## Stage 5 — Test & Quality
 
-- [ ] `azuredevops_test_plan` — `testplan`
-- [ ] `azuredevops_test_suite` — `testplan`
-- [ ] `azuredevops_test_case` — `testplan`
+- [x] `azuredevops_test_plan` — `testplan`
+- [x] `azuredevops_test_suite` — `testplan`
+- [x] `azuredevops_test_case` — `testplan`
 - [ ] `azuredevops_test_run` — `testresults`
 - [ ] `azuredevops_test_result` — `testresults`
-- [ ] `azuredevops_test_point` — `testplan`
+- [x] `azuredevops_test_point` — `testplan`
 
 ---
 

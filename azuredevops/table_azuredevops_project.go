@@ -173,6 +173,53 @@ func listProjects(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 	return nil, nil
 }
 
+// forEachProject visits every project. The SQL limit applies to rows streamed by
+// visit, not to how many projects are fetched.
+func forEachProject(ctx context.Context, d *plugin.QueryData, visit func(projectID string) error) error {
+	connection, err := getConnection(ctx, d)
+	if err != nil {
+		plugin.Logger(ctx).Error("azuredevops_project.forEachProject", "connection_error", err)
+		return err
+	}
+	client, err := core.NewClient(ctx, connection)
+	if err != nil {
+		plugin.Logger(ctx).Error("azuredevops_project.forEachProject", "client_error", err)
+		return err
+	}
+
+	input := core.GetProjectsArgs{Top: types.Int(100)}
+	for {
+		if d.RowsRemaining(ctx) == 0 {
+			return nil
+		}
+		response, err := client.GetProjects(ctx, input)
+		if err != nil {
+			plugin.Logger(ctx).Error("azuredevops_project.forEachProject", "api_error", err)
+			return err
+		}
+		for _, project := range response.Value {
+			if project.Id == nil {
+				continue
+			}
+			if err := visit(project.Id.String()); err != nil {
+				return err
+			}
+			if d.RowsRemaining(ctx) == 0 {
+				return nil
+			}
+		}
+		if response.ContinuationToken == "" {
+			return nil
+		}
+		continuationToken, err := strconv.Atoi(response.ContinuationToken)
+		if err != nil {
+			plugin.Logger(ctx).Error("azuredevops_project.forEachProject", "continuation_token_error", err)
+			return err
+		}
+		input.ContinuationToken = types.Int(continuationToken)
+	}
+}
+
 func getProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	var id string
 	if h.Item != nil {
