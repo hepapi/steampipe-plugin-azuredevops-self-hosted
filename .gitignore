@@ -33,6 +33,7 @@ node_modules
 .gocache
 .gomodcache
 .prompts
+RELEASE_PLAN.md
 
 # Local isolated steampipe test install (scripts/test_stage1.sh)
 .steampipe-test/
