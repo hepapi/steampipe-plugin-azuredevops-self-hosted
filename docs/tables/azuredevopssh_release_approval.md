@@ -17,22 +17,7 @@ Use this table to find approvals that are still waiting, and to see the approver
 
 ### Pending approvals
 
-```sql+postgres
-select
-  project_id,
-  id,
-  release_id,
-  release_environment_id,
-  approval_type,
-  approver
-from
-  azuredevopssh_release_approval
-where
-  status = 'pending'
-limit 20;
-```
-
-```sql+sqlite
+```sql
 select
   project_id,
   id,
@@ -49,7 +34,7 @@ limit 20;
 
 ### Approvals for one release
 
-```sql+postgres
+```sql
 select
   id,
   status,
@@ -63,16 +48,3 @@ where
   and release_id = 42;
 ```
 
-```sql+sqlite
-select
-  id,
-  status,
-  approval_type,
-  comments,
-  modified_on
-from
-  azuredevopssh_release_approval
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and release_id = 42;
-```

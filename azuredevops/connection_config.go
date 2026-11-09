@@ -54,8 +54,8 @@ func getConnection(ctx context.Context, d *plugin.QueryData) (*azuredevops.Conne
 
 // getServerURL returns the Azure DevOps server root URL used to enumerate
 // project collections. For self-hosted deployments this is the server root
-// (e.g. https://code.digiturk.net/), while organization_url points at a
-// specific collection (e.g. https://code.digiturk.net/SCMPOCCollection).
+// (e.g. https://azuredevops.example.com/), while organization_url points at a
+// specific collection (e.g. https://azuredevops.example.com/DefaultCollection).
 //
 // Resolution order:
 //  1. The explicit `server_url` config value.

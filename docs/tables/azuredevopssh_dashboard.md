@@ -16,19 +16,7 @@ The `azuredevopssh_dashboard` table provides insights into the dashboards within
 ### Basic info
 Discover the segments that are linked to your Azure DevOps dashboard, including the project and group it belongs to, as well as its owner. This can help in managing and organizing your projects more efficiently.
 
-```sql+postgres
-select
-  id,
-  name,
-  dashboard_scope,
-  project_id,
-  owner_id,
-  group_id
-from
-  azuredevopssh_dashboard;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -43,21 +31,7 @@ from
 ### List dashboards with project scope
 Discover the dashboards that are specifically scoped to projects in Azure DevOps. This is useful for assessing the distribution of resources and managing project-specific data.
 
-```sql+postgres
-select
-  id,
-  name,
-  dashboard_scope,
-  project_id,
-  owner_id,
-  group_id
-from
-  azuredevopssh_dashboard
-where
-  dashboard_scope = 'project';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -74,23 +48,7 @@ where
 ### List dashboards of a particular project
 Discover the segments that belong to a specific project by identifying all associated dashboards. This is beneficial in understanding the structure and distribution of resources within a particular project.
 
-```sql+postgres
-select
-  d.id as dashboard_id,
-  d.name,
-  d.dashboard_scope,
-  d.project_id,
-  d.owner_id,
-  d.group_id
-from
-  azuredevopssh_dashboard as d,
-  azuredevopssh_project as p
-where
-  d.project_id = p.id
-  and p.name = 'private_project';
-```
-
-```sql+sqlite
+```sql
 select
   d.id as dashboard_id,
   d.name,
@@ -109,21 +67,7 @@ where
 ### Get owner details of a particular dashboard
 Explore the teams associated with a specific Azure DevOps dashboard to understand its ownership and associated project details. This can be useful for auditing purposes or to manage permissions and access controls.
 
-```sql+postgres
-select
-  t.id as team_id,
-  t.name,
-  t.project_id,
-  t.project_name
-from
-  azuredevopssh_dashboard as d,
-  azuredevopssh_team as t
-where
-  d.owner_id = t.id
-  and d.name = 'test';
-```
-
-```sql+sqlite
+```sql
 select
   t.id as team_id,
   t.name,

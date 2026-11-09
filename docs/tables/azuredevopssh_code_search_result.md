@@ -11,7 +11,7 @@ A code search result is a file that matches `search_text`. `search_text` is requ
 
 ### Search the collection
 
-```sql+postgres
+```sql
 select
   file_name,
   path,
@@ -25,16 +25,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  file_name,
-  path,
-  project_name,
-  repository_name
-from
-  azuredevopssh_code_search_result
-where
-  search_text = 'func'
-limit
-  20;
-```

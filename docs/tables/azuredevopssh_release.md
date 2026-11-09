@@ -16,19 +16,7 @@ The `azuredevopssh_release` table provides insights into the release pipelines w
 ### Basic info
 Explore which projects have been created in Azure DevOps and their current status, allowing you to understand the lifecycle and longevity of each project for better management.
 
-```sql+postgres
-select
-  id,
-  name,
-  status,
-  project_id,
-  created_on,
-  keep_forever
-from
-  azuredevopssh_release;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -43,7 +31,7 @@ from
 ### List releases which should be skipped by retention policies
 Assess the elements within your Azure DevOps releases that are earmarked to be kept indefinitely, allowing you to identify potential areas for data management and storage optimization. This is particularly useful in managing retention policies and ensuring efficient use of resources.
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -57,38 +45,10 @@ where
   keep_forever;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  status,
-  project_id,
-  created_on,
-  keep_forever
-from
-  azuredevopssh_release
-where
-  keep_forever = 1;
-```
-
 ### List abandoned releases
 Identify instances where releases have been abandoned in Azure DevOps. This aids in understanding project progress and identifying potential bottlenecks or areas for improvement.
 
-```sql+postgres
-select
-  id,
-  name,
-  status,
-  project_id,
-  created_on,
-  keep_forever
-from
-  azuredevopssh_release
-where
-  status = 'abandoned';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -105,21 +65,7 @@ where
 ### List manual releases
 Explore which project releases in Azure DevOps have been manually initiated. This can help in assessing the frequency of manual interventions and their impact on the overall project timeline.
 
-```sql+postgres
-select
-  id,
-  name,
-  status,
-  project_id,
-  created_on,
-  keep_forever
-from
-  azuredevopssh_release
-where
-  reason = 'manual';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -136,7 +82,7 @@ where
 ### Get creator details of a particular release
 Explore which individual created a specific release in the Azure DevOps platform. This is useful for accountability and tracking changes within the project management lifecycle.
 
-```sql+postgres
+```sql
 select
   name,
   created_by ->> 'id' as id,
@@ -145,21 +91,6 @@ select
   created_by ->> 'descriptor' as descriptor,
   created_by ->> 'url' as url,
   created_by ->> 'imageUrl' as image_url
-from
-  azuredevopssh_release
-where
-  name = 'Release-1';
-```
-
-```sql+sqlite
-select
-  name,
-  json_extract(created_by, '$.id') as id,
-  json_extract(created_by, '$.displayName') as display_name,
-  json_extract(created_by, '$.uniqueName') as unique_name,
-  json_extract(created_by, '$.descriptor') as descriptor,
-  json_extract(created_by, '$.url') as url,
-  json_extract(created_by, '$.imageUrl') as image_url
 from
   azuredevopssh_release
 where

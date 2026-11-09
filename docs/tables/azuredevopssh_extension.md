@@ -11,7 +11,7 @@ An extension is a gallery extension installed in the collection. `publisher_id` 
 
 ### Installed extensions
 
-```sql+postgres
+```sql
 select
   publisher_id,
   extension_id,
@@ -23,14 +23,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  publisher_id,
-  extension_id,
-  extension_name,
-  version
-from
-  azuredevopssh_extension
-limit
-  20;
-```

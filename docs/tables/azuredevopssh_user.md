@@ -5,13 +5,7 @@ description: "Allows users to query Azure DevOps Users, specifically user detail
 
 # Table: azuredevopssh_user - Query Azure DevOps Users using SQL
 
-Azure DevOps is a Microsoft product that provides version control, reporting, requirements management, project management, automated builds, lab management, testing and release management capabilities. It covers the entire application lifecycle and enables DevOps capabilities. Azure DevOps can be used for any kind of application regardless of the framework, platform, or cloud.
-
-The following types of users can join your Azure DevOps Services organization for free:
-
-- Five users who get Basic features, such as version control, tools for Agile, Java, build, release, and more.
-- Unlimited users who get Stakeholder features, such as working with your backlog, work items, and queries.
-- Unlimited Visual Studio subscribers who also get Basic or Basic + Test Plan features, depending on their subscription level.
+The `azuredevopssh_user` table lists users from the Graph API. Azure DevOps Server 2022.1 does not register that location on every collection. When it is missing, a query returns a location error. Direct membership of a known group is available from `azuredevopssh_group_membership`, which falls back to the Identity API.
 
 ## Table Usage Guide
 
@@ -22,18 +16,7 @@ The `azuredevopssh_user` table provides insights into users within Azure DevOps.
 ### Basic info
 Explore which users are active in your Azure DevOps environment. This can help in managing user access and understanding the distribution of users across different domains and origins.
 
-```sql+postgres
-select
-  principal_name,
-  display_name,
-  membership_state,
-  domain,
-  origin
-from
-  azuredevopssh_user;
-```
-
-```sql+sqlite
+```sql
 select
   principal_name,
   display_name,
@@ -47,20 +30,7 @@ from
 ### List inactive users
 Explore which users in your Azure DevOps environment are inactive. This can help maintain system security by identifying potential unused or unnecessary accounts.
 
-```sql+postgres
-select
-  principal_name,
-  display_name,
-  membership_state,
-  domain,
-  origin
-from
-  azuredevopssh_user
-where
-  not membership_state;
-```
-
-```sql+sqlite
+```sql
 select
   principal_name,
   display_name,
@@ -76,20 +46,7 @@ where
 ### List users from aad
 Explore which Azure DevOps users have their origin set to 'aad', enabling you to understand their source and manage user access effectively. This is particularly useful in large organizations where user management can be complex.
 
-```sql+postgres
-select
-  principal_name,
-  display_name,
-  membership_state,
-  domain,
-  origin
-from
-  azuredevopssh_user
-where
-  origin = 'aad';
-```
-
-```sql+sqlite
+```sql
 select
   principal_name,
   display_name,
@@ -105,7 +62,7 @@ where
 ### List the users that have been deleted in the identity provider
 Explore the users who have been removed from the identity provider. This query is useful for auditing and maintaining security compliance by tracking changes in user access.
 
-```sql+postgres
+```sql
 select
   principal_name,
   display_name,
@@ -118,23 +75,10 @@ where
   is_deleted_in_origin;
 ```
 
-```sql+sqlite
-select
-  principal_name,
-  display_name,
-  membership_state,
-  domain,
-  origin
-from
-  azuredevopssh_user
-where
-  is_deleted_in_origin = 1;
-```
-
 ### List users who are part of `Project Collection Administrators` group
 Explore which users are part of a specific administrative group within a project collection. This is useful for auditing purposes, allowing you to ensure only authorized individuals have administrative access.
 
-```sql+postgres
+```sql
 select
   principal_name,
   display_name,
@@ -146,28 +90,6 @@ from
   jsonb_array_elements(memberships) as m
 where
   m ->> 'containerDescriptor' in
-  (
-    select
-      descriptor
-    from
-      azuredevopssh_group
-    where
-      display_name = 'Project Collection Administrators'
-  );
-```
-
-```sql+sqlite
-select
-  principal_name,
-  display_name,
-  membership_state,
-  domain,
-  origin
-from
-  azuredevopssh_user,
-  json_each(memberships) as m
-where
-  json_extract(m.value, '$.containerDescriptor') in
   (
     select
       descriptor

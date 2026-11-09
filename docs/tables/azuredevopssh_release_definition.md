@@ -17,20 +17,7 @@ Use this table to inventory classic release pipelines, their folder path, and th
 
 ### Basic info
 
-```sql+postgres
-select
-  project_id,
-  id,
-  name,
-  path,
-  revision,
-  is_deleted
-from
-  azuredevopssh_release_definition
-limit 20;
-```
-
-```sql+sqlite
+```sql
 select
   project_id,
   id,
@@ -45,7 +32,7 @@ limit 20;
 
 ### Definitions in one project
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -57,14 +44,3 @@ where
   project_id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  path,
-  modified_on
-from
-  azuredevopssh_release_definition
-where
-  project_id = '00000000-0000-0000-0000-000000000000';
-```

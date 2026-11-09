@@ -19,7 +19,7 @@ Use this table to see which checks protect a service connection or environment. 
 
 ### Checks on a service connection
 
-```sql+postgres
+```sql
 select
   id,
   type_name,
@@ -34,17 +34,3 @@ where
   and resource_id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  type_name,
-  resource_name,
-  timeout,
-  created_on
-from
-  azuredevopssh_pipeline_check
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and resource_type = 'endpoint'
-  and resource_id = '00000000-0000-0000-0000-000000000000';
-```

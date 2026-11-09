@@ -15,21 +15,7 @@ The list returns the first page. `id` fetches one user. `filter` is passed throu
 
 ### List user licenses
 
-```sql+postgres
-select
-  id,
-  display_name,
-  principal_name,
-  account_license_type,
-  license_display_name,
-  license_status
-from
-  azuredevopssh_user_entitlement
-limit
-  20;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   display_name,
@@ -45,7 +31,7 @@ limit
 
 ### One user by id
 
-```sql+postgres
+```sql
 select
   id,
   display_name,
@@ -58,15 +44,3 @@ where
   id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  display_name,
-  license_display_name,
-  extensions,
-  project_entitlements
-from
-  azuredevopssh_user_entitlement
-where
-  id = '00000000-0000-0000-0000-000000000000';
-```

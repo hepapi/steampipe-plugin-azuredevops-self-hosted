@@ -17,21 +17,7 @@ Use this table to find the log URL for a build, or to see how large each log is,
 
 ### Logs for one build
 
-```sql+postgres
-select
-  id,
-  type,
-  line_count,
-  created_on,
-  url
-from
-  azuredevopssh_build_log
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and build_id = 123;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   type,
@@ -47,7 +33,7 @@ where
 
 ### One log by id
 
-```sql+postgres
+```sql
 select
   id,
   line_count,
@@ -61,16 +47,3 @@ where
   and id = 1;
 ```
 
-```sql+sqlite
-select
-  id,
-  line_count,
-  last_changed_on,
-  url
-from
-  azuredevopssh_build_log
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and build_id = 123
-  and id = 1;
-```

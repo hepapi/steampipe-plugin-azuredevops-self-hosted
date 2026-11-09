@@ -11,7 +11,7 @@ An agent pool is a set of build and release agents. The `azuredevopssh_agent_poo
 
 ### Agent pools
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -24,15 +24,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  pool_type,
-  size,
-  is_hosted
-from
-  azuredevopssh_agent_pool
-limit
-  20;
-```

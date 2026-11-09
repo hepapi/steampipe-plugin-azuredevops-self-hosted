@@ -16,19 +16,7 @@ The `azuredevopssh_security_namespace` table provides the permission model for a
 ### Basic info
 List security namespaces and how many actions each one defines.
 
-```sql+postgres
-select
-  namespace_id,
-  name,
-  display_name,
-  json_array_length(actions) as action_count
-from
-  azuredevopssh_security_namespace
-order by
-  name;
-```
-
-```sql+sqlite
+```sql
 select
   namespace_id,
   name,
@@ -43,20 +31,7 @@ order by
 ### Find the Git repositories namespace
 Resolve the namespace id used for repository permissions.
 
-```sql+postgres
-select
-  namespace_id,
-  name,
-  display_name,
-  read_permission,
-  write_permission
-from
-  azuredevopssh_security_namespace
-where
-  name = 'Git Repositories';
-```
-
-```sql+sqlite
+```sql
 select
   namespace_id,
   name,
@@ -72,7 +47,7 @@ where
 ### List the actions in a namespace
 Inspect the bit and name of each action a namespace secures.
 
-```sql+postgres
+```sql
 select
   namespace_id,
   name,
@@ -83,13 +58,3 @@ where
   name = 'Git Repositories';
 ```
 
-```sql+sqlite
-select
-  namespace_id,
-  name,
-  actions
-from
-  azuredevopssh_security_namespace
-where
-  name = 'Git Repositories';
-```

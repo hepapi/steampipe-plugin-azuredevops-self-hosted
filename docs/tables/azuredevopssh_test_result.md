@@ -11,24 +11,7 @@ A test result is one test inside a test run. `project_id` and `run_id` are requi
 
 ### Results of one run
 
-```sql+postgres
-select
-  id,
-  test_case_title,
-  outcome,
-  state,
-  duration_in_ms,
-  error_message
-from
-  azuredevopssh_test_result
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and run_id = 50
-order by
-  id;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   test_case_title,
@@ -47,7 +30,7 @@ order by
 
 ### Failed results
 
-```sql+postgres
+```sql
 select
   id,
   test_case_title,
@@ -61,16 +44,3 @@ where
   and outcome = 'Failed';
 ```
 
-```sql+sqlite
-select
-  id,
-  test_case_title,
-  failure_type,
-  error_message
-from
-  azuredevopssh_test_result
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and run_id = 50
-  and outcome = 'Failed';
-```

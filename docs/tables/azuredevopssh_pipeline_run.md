@@ -17,23 +17,7 @@ Use this table for YAML pipeline history. Classic build history stays in `azured
 
 ### Recent runs of one pipeline
 
-```sql+postgres
-select
-  id,
-  name,
-  state,
-  result,
-  created_date,
-  finished_date
-from
-  azuredevopssh_pipeline_run
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and pipeline_id = 12
-limit 20;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -51,7 +35,7 @@ limit 20;
 
 ### One run
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -66,17 +50,3 @@ where
   and id = 340;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  state,
-  result,
-  url
-from
-  azuredevopssh_pipeline_run
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and pipeline_id = 12
-  and id = 340;
-```

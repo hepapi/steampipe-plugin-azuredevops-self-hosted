@@ -17,20 +17,7 @@ Use this table to see what a build published and where the artifact can be downl
 
 ### Artifacts for one build
 
-```sql+postgres
-select
-  id,
-  name,
-  source,
-  resource
-from
-  azuredevopssh_build_artifact
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and build_id = 123;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -45,7 +32,7 @@ where
 
 ### One artifact by name
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -58,15 +45,3 @@ where
   and name = 'drop';
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  resource
-from
-  azuredevopssh_build_artifact
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and build_id = 123
-  and name = 'drop';
-```

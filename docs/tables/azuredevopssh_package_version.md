@@ -11,24 +11,7 @@ A package version is one published release of a package. `feed_id` and `package_
 
 ### Versions of a package
 
-```sql+postgres
-select
-  id,
-  version,
-  is_latest,
-  is_deleted,
-  publish_date,
-  author
-from
-  azuredevopssh_package_version
-where
-  feed_id = '00000000-0000-0000-0000-000000000000'
-  and package_id = '00000000-0000-0000-0000-000000000000'
-order by
-  publish_date desc;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   version,
@@ -47,7 +30,7 @@ order by
 
 ### One version
 
-```sql+postgres
+```sql
 select
   id,
   version,
@@ -61,16 +44,3 @@ where
   and id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  version,
-  description,
-  dependencies
-from
-  azuredevopssh_package_version
-where
-  feed_id = '00000000-0000-0000-0000-000000000000'
-  and package_id = '00000000-0000-0000-0000-000000000000'
-  and id = '00000000-0000-0000-0000-000000000000';
-```

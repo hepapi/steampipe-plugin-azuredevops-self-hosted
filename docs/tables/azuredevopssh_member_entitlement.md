@@ -15,20 +15,7 @@ The generated client returns the first page. `filter` is passed through as the A
 
 ### List member licenses
 
-```sql+postgres
-select
-  id,
-  display_name,
-  account_license_type,
-  license_display_name,
-  license_status
-from
-  azuredevopssh_member_entitlement
-limit
-  20;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   display_name,
@@ -43,7 +30,7 @@ limit
 
 ### One member by id
 
-```sql+postgres
+```sql
 select
   id,
   display_name,
@@ -55,14 +42,3 @@ where
   id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  display_name,
-  license_display_name,
-  project_entitlements
-from
-  azuredevopssh_member_entitlement
-where
-  id = '00000000-0000-0000-0000-000000000000';
-```

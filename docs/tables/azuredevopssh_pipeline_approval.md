@@ -17,7 +17,7 @@ Use this table to read the status, instructions, and steps of a known YAML pipel
 
 ### One approval
 
-```sql+postgres
+```sql
 select
   id,
   status,
@@ -31,16 +31,3 @@ where
   and id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  status,
-  instructions,
-  min_required_approvers,
-  steps
-from
-  azuredevopssh_pipeline_approval
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and id = '00000000-0000-0000-0000-000000000000';
-```

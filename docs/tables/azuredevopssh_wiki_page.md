@@ -11,7 +11,7 @@ A wiki page is one document in a wiki. `project_id` and `wiki_id` are required. 
 
 ### Pages in a wiki
 
-```sql+postgres
+```sql
 select
   id,
   path
@@ -24,15 +24,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  id,
-  path
-from
-  azuredevopssh_wiki_page
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and wiki_id = '00000000-0000-0000-0000-000000000000'
-limit
-  20;
-```

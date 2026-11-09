@@ -13,23 +13,7 @@ Test Plans can require a separate license on Azure DevOps Server. An unlicensed 
 
 ### Plans in a project
 
-```sql+postgres
-select
-  id,
-  name,
-  state,
-  area_path,
-  iteration,
-  updated_date
-from
-  azuredevopssh_test_plan
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-order by
-  name;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -47,7 +31,7 @@ order by
 
 ### One plan
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -60,15 +44,3 @@ where
   and id = 12;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  state,
-  root_suite
-from
-  azuredevopssh_test_plan
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and id = 12;
-```

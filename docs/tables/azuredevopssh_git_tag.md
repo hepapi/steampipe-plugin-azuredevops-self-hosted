@@ -5,7 +5,7 @@ description: "Allows users to query Git Tags in Azure DevOps, providing details 
 
 # Table: azuredevopssh_git_tag - Query Azure DevOps Git Tags using SQL
 
-Azure DevOps is a service from Microsoft that provides developer services for support teams to plan work, collaborate on code development, and build and deploy applications. Git Tags in Azure DevOps are named references used to mark specific points in repository history, such as release versions, and can be lightweight or annotated.
+Git Tags in Azure DevOps are named references used to mark specific points in repository history, such as release versions, and can be lightweight or annotated.
 
 ## Table Usage Guide
 
@@ -16,18 +16,7 @@ The `azuredevopssh_git_tag` table provides insights into Git Tags within Azure D
 ### Basic info
 Get the general information about tags, such as their names and the objects they point to.
 
-```sql+postgres
-select
-  repository_id,
-  name,
-  object_id,
-  peeled_object_id,
-  message
-from
-  azuredevopssh_git_tag;
-```
-
-```sql+sqlite
+```sql
 select
   repository_id,
   name,
@@ -41,20 +30,7 @@ from
 ### List tags in a repository
 Find all tags in a specific repository, ordered by name.
 
-```sql+postgres
-select
-  name,
-  object_id,
-  message
-from
-  azuredevopssh_git_tag
-where
-  repository_id = '256e4f2a-9e1a-4b7f-9a8e-3f7a2d0c9b21'
-order by
-  name;
-```
-
-```sql+sqlite
+```sql
 select
   name,
   object_id,
@@ -70,18 +46,7 @@ order by
 ### List tags with a release message
 Find annotated tags that carry a message, which often documents the release they mark.
 
-```sql+postgres
-select
-  name,
-  message,
-  creator
-from
-  azuredevopssh_git_tag
-where
-  message is not null;
-```
-
-```sql+sqlite
+```sql
 select
   name,
   message,
@@ -95,7 +60,7 @@ where
 ### List tags created by a specific user
 Find tags created by a given identity, useful for auditing who cut release tags.
 
-```sql+postgres
+```sql
 select
   repository_id,
   name,
@@ -104,15 +69,4 @@ from
   azuredevopssh_git_tag
 where
   creator ->> 'displayName' = 'Jane Doe';
-```
-
-```sql+sqlite
-select
-  repository_id,
-  name,
-  object_id
-from
-  azuredevopssh_git_tag
-where
-  json_extract(creator, '$.displayName') = 'Jane Doe';
 ```

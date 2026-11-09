@@ -5,7 +5,7 @@ description: "Allows users to query Git Pull Request Threads in Azure DevOps, pr
 
 # Table: azuredevopssh_git_pull_request_thread - Query Azure DevOps Git Pull Request Threads using SQL
 
-Azure DevOps is a service from Microsoft that provides developer services for support teams to plan work, collaborate on code development, and build and deploy applications. Pull Request Threads in Azure DevOps represent code review conversations attached to a pull request, where reviewers can leave comments and discuss specific lines of code.
+Pull Request Threads in Azure DevOps represent code review conversations attached to a pull request, where reviewers can leave comments and discuss specific lines of code.
 
 ## Table Usage Guide
 
@@ -16,18 +16,7 @@ The `azuredevopssh_git_pull_request_thread` table provides insights into Git Pul
 ### Basic info
 Get the general information about pull request threads, such as their status and associated pull requests.
 
-```sql+postgres
-select
-  thread_id,
-  pull_request_id,
-  repository_id,
-  status,
-  is_deleted
-from
-  azuredevopssh_git_pull_request_thread;
-```
-
-```sql+sqlite
+```sql
 select
   thread_id,
   pull_request_id,
@@ -41,19 +30,7 @@ from
 ### List active pull request threads
 Find code review threads that are still active within your pull requests.
 
-```sql+postgres
-select
-  thread_id,
-  pull_request_id,
-  repository_id,
-  status
-from
-  azuredevopssh_git_pull_request_thread
-where
-  status = 'active';
-```
-
-```sql+sqlite
+```sql
 select
   thread_id,
   pull_request_id,
@@ -68,18 +45,7 @@ where
 ### List threads for a specific pull request
 Filter threads by pull request to focus on the code review discussion for a single change.
 
-```sql+postgres
-select
-  thread_id,
-  status,
-  thread_context
-from
-  azuredevopssh_git_pull_request_thread
-where
-  pull_request_id = 42;
-```
-
-```sql+sqlite
+```sql
 select
   thread_id,
   status,

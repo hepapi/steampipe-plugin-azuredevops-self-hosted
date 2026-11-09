@@ -5,7 +5,7 @@ description: "Allows users to query Git Refs in Azure DevOps, providing details 
 
 # Table: azuredevopssh_git_ref - Query Azure DevOps Git Refs using SQL
 
-Azure DevOps is a service from Microsoft that provides developer services for support teams to plan work, collaborate on code development, and build and deploy applications. Git Refs in Azure DevOps are named pointers to commits, including branches, tags, and pull request refs, that identify the current state of a line of work.
+Git Refs in Azure DevOps are named pointers to commits, including branches, tags, and pull request refs, that identify the current state of a line of work.
 
 ## Table Usage Guide
 
@@ -16,18 +16,7 @@ The `azuredevopssh_git_ref` table provides insights into Git Refs within Azure D
 ### Basic info
 Get the general information about refs, such as their names and the objects they point to.
 
-```sql+postgres
-select
-  repository_id,
-  name,
-  object_id,
-  peeled_object_id,
-  is_locked
-from
-  azuredevopssh_git_ref;
-```
-
-```sql+sqlite
+```sql
 select
   repository_id,
   name,
@@ -41,18 +30,7 @@ from
 ### List branches in a repository
 Find all branch refs in a specific repository.
 
-```sql+postgres
-select
-  name,
-  object_id
-from
-  azuredevopssh_git_ref
-where
-  repository_id = '256e4f2a-9e1a-4b7f-9a8e-3f7a2d0c9b21'
-  and name like 'refs/heads/%';
-```
-
-```sql+sqlite
+```sql
 select
   name,
   object_id
@@ -66,19 +44,7 @@ where
 ### Find locked refs
 Identify refs that have been locked, which prevents updates to the referenced object.
 
-```sql+postgres
-select
-  repository_id,
-  name,
-  object_id,
-  is_locked_by
-from
-  azuredevopssh_git_ref
-where
-  is_locked;
-```
-
-```sql+sqlite
+```sql
 select
   repository_id,
   name,
@@ -93,7 +59,7 @@ where
 ### List refs created by a specific user
 Find refs created by a given identity, useful for auditing who created branches or other refs.
 
-```sql+postgres
+```sql
 select
   repository_id,
   name,
@@ -102,15 +68,4 @@ from
   azuredevopssh_git_ref
 where
   creator ->> 'displayName' = 'Jane Doe';
-```
-
-```sql+sqlite
-select
-  repository_id,
-  name,
-  object_id
-from
-  azuredevopssh_git_ref
-where
-  json_extract(creator, '$.displayName') = 'Jane Doe';
 ```

@@ -18,24 +18,7 @@ Use this table to see which steps ran, how long they took, and which ones failed
 ### Timeline for one build
 List the records of a build.
 
-```sql+postgres
-select
-  id,
-  name,
-  type,
-  state,
-  result,
-  start_time,
-  finish_time,
-  error_count
-from
-  azuredevopssh_build_timeline
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and build_id = 123;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -55,7 +38,7 @@ where
 ### Failed tasks
 Find completed records that did not succeed.
 
-```sql+postgres
+```sql
 select
   name,
   type,
@@ -71,18 +54,3 @@ where
   and result <> 'succeeded';
 ```
 
-```sql+sqlite
-select
-  name,
-  type,
-  result,
-  error_count,
-  warning_count
-from
-  azuredevopssh_build_timeline
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and build_id = 123
-  and result is not null
-  and result <> 'succeeded';
-```

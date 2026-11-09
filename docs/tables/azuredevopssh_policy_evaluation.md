@@ -18,23 +18,7 @@ The `azuredevopssh_policy_evaluation` table provides the current evaluation stat
 ### Basic info
 List every policy evaluation for one pull request artifact.
 
-```sql+postgres
-select
-  id,
-  status,
-  policy_type_display_name,
-  is_enabled,
-  is_blocking,
-  started_date,
-  completed_date
-from
-  azuredevopssh_policy_evaluation
-where
-  project_id = 'bdcdf70b-7757-4253-b36c-33c08ca07dbb'
-  and artifact_id = 'vstfs:///CodeReview/CodeReviewId/bdcdf70b-7757-4253-b36c-33c08ca07dbb/42';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   status,
@@ -53,21 +37,7 @@ where
 ### List rejected or broken evaluations
 Find evaluations that are blocking the artifact.
 
-```sql+postgres
-select
-  id,
-  status,
-  policy_type_display_name,
-  configuration_id
-from
-  azuredevopssh_policy_evaluation
-where
-  project_id = 'bdcdf70b-7757-4253-b36c-33c08ca07dbb'
-  and artifact_id = 'vstfs:///CodeReview/CodeReviewId/bdcdf70b-7757-4253-b36c-33c08ca07dbb/42'
-  and status in ('rejected', 'broken');
-```
-
-```sql+sqlite
+```sql
 select
   id,
   status,
@@ -84,7 +54,7 @@ where
 ### Join evaluations to a pull request
 Use the pull request's `artifact_id` instead of building the artifact string yourself.
 
-```sql+postgres
+```sql
 select
   pr.pull_request_id,
   pr.title as pull_request_title,
@@ -101,19 +71,3 @@ where
   and pr.repository_id = '256e4f2a-9e1a-4b7f-9a8e-3f7a2d0c9b21';
 ```
 
-```sql+sqlite
-select
-  pr.pull_request_id,
-  pr.title as pull_request_title,
-  e.status,
-  e.policy_type_display_name,
-  e.is_blocking
-from
-  azuredevopssh_git_pull_request as pr
-  join azuredevopssh_policy_evaluation as e
-    on e.project_id = pr.project_id
-    and e.artifact_id = pr.artifact_id
-where
-  pr.pull_request_id = 42
-  and pr.repository_id = '256e4f2a-9e1a-4b7f-9a8e-3f7a2d0c9b21';
-```

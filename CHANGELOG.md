@@ -1,3 +1,14 @@
+## v0.1.0 [2026-11-09]
+
+_What's new?_
+
+- First Hepapi release of the unofficial self-hosted Azure DevOps plugin. Install it with `steampipe plugin install ghcr.io/hepapi/azuredevopssh`.
+- Published as `azuredevopssh`, separate from Turbot's `azuredevops` plugin.
+
+## Inherited upstream changelog
+
+The sections below are history from Turbot's `azuredevops` plugin. They are not releases of this plugin.
+
 ## v1.2.0 [2025-10-13]
 
 _Dependencies_

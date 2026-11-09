@@ -1,6 +1,6 @@
 # Azure DevOps (Self-Hosted) Steampipe Plugin — Roadmap
 
-This is a living, incremental roadmap for expanding the `steampipe-plugin-azuredevops` fork into a comprehensive observability plugin for **self-hosted Azure DevOps Server 2022.1** (primary target), while keeping **SaaS (`https://dev.azure.com/org`)** working (secondary).
+This is the roadmap for Hepapi's `azuredevopssh` plugin. The target is **self-hosted Azure DevOps Server 2022.1**. Azure DevOps Services (`https://dev.azure.com/{organization}`) keeps working where the same API exists.
 
 - **Client:** `github.com/microsoft/azure-devops-go-api/azuredevops/v7` (v7.1.0)
 - **REST reference:** https://learn.microsoft.com/en-us/rest/api/azure/devops/?view=azure-devops-rest-7.2
@@ -128,4 +128,4 @@ Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depend
 - Project-scoped tables: `ParentHydrate: listProjects` + wrapper struct carrying `ProjectId`; filter on `project_id` equals-qual before calling the API.
 - Respect `d.RowsRemaining(ctx)` and `d.QueryContext.Limit`; implement continuation-token pagination where the go client supports it.
 - Log errors with table/hydrate name as first arg.
-- Add matching `docs/tables/*.md` with `sql+postgres` + `sql+sqlite` examples.
+- Add matching `docs/tables/*.md` with Steampipe SQL examples.

@@ -13,20 +13,7 @@ The table uses the Graph membership API when that location is registered. Azure 
 
 ### Members of a group
 
-```sql+postgres
-select
-  container_descriptor,
-  member_descriptor,
-  direction
-from
-  azuredevopssh_group_membership
-where
-  subject_descriptor = 'vssgp.example'
-limit
-  20;
-```
-
-```sql+sqlite
+```sql
 select
   container_descriptor,
   member_descriptor,
@@ -41,7 +28,7 @@ limit
 
 ### Groups a subject belongs to
 
-```sql+postgres
+```sql
 select
   container_descriptor,
   member_descriptor
@@ -52,13 +39,3 @@ where
   and direction = 'up';
 ```
 
-```sql+sqlite
-select
-  container_descriptor,
-  member_descriptor
-from
-  azuredevopssh_group_membership
-where
-  subject_descriptor = 'vssgp.example'
-  and direction = 'up';
-```

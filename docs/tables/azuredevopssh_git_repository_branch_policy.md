@@ -18,18 +18,7 @@ The `azuredevopssh_git_repository_branch_policy` table provides insights into br
 ### Basic info
 List all branch policies with their type and status.
 
-```sql+postgres
-select
-  id,
-  project_id,
-  policy_type_display_name,
-  is_enabled,
-  is_blocking
-from
-  azuredevopssh_git_repository_branch_policy;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   project_id,
@@ -43,18 +32,7 @@ from
 ### List enabled blocking policies
 Identify policies that are both enabled and blocking (i.e. actively gating merges).
 
-```sql+postgres
-select
-  id,
-  policy_type_display_name
-from
-  azuredevopssh_git_repository_branch_policy
-where
-  is_enabled
-  and is_blocking;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   policy_type_display_name
@@ -68,19 +46,7 @@ where
 ### List status check policies
 Status checks are a branch policy type whose display name is `Status` (or `Required status checks` on some versions).
 
-```sql+postgres
-select
-  id,
-  project_id,
-  policy_type_id,
-  settings
-from
-  azuredevopssh_git_repository_branch_policy
-where
-  lower(policy_type_display_name) in ('status', 'required status checks', 'status checks');
-```
-
-```sql+sqlite
+```sql
 select
   id,
   project_id,
@@ -95,16 +61,7 @@ where
 ### Inspect the scope (branches/repositories a policy covers)
 The `scope` column is a JSON array; each entry has `refName` (full ref), `repositoryId`, and `matchKind`.
 
-```sql+postgres
-select
-  id,
-  policy_type_display_name,
-  scope
-from
-  azuredevopssh_git_repository_branch_policy;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   policy_type_display_name,
@@ -116,16 +73,7 @@ from
 ### Inspect raw policy settings
 Examine the full policy settings JSON (e.g. required reviewer IDs, build definition ID, status name, filename patterns).
 
-```sql+postgres
-select
-  id,
-  policy_type_display_name,
-  settings
-from
-  azuredevopssh_git_repository_branch_policy;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   policy_type_display_name,

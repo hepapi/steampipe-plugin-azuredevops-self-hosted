@@ -11,7 +11,7 @@ A wiki is either a project wiki or a code wiki published from a git folder. The 
 
 ### Wikis in the collection
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -24,15 +24,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  type,
-  project_id,
-  mapped_path
-from
-  azuredevopssh_wiki
-limit
-  20;
-```

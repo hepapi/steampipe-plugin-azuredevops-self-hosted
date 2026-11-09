@@ -13,26 +13,7 @@ Runs are read with the test REST API (`GetTestRuns`), which records pipeline and
 
 ### Recent runs in a project
 
-```sql+postgres
-select
-  id,
-  name,
-  state,
-  is_automated,
-  total_tests,
-  passed_tests,
-  completed_date
-from
-  azuredevopssh_test_run
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-order by
-  completed_date desc
-limit
-  20;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -53,7 +34,7 @@ limit
 
 ### Automated runs
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -69,18 +50,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  state,
-  passed_tests,
-  total_tests
-from
-  azuredevopssh_test_run
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and is_automated = 1
-limit
-  20;
-```

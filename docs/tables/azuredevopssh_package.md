@@ -11,21 +11,7 @@ A package is one artifact name in a feed, such as a NuGet, npm, Maven, PyPI, or 
 
 ### Packages in a feed
 
-```sql+postgres
-select
-  id,
-  name,
-  protocol_type,
-  url
-from
-  azuredevopssh_package
-where
-  feed_id = '00000000-0000-0000-0000-000000000000'
-limit
-  20;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -41,7 +27,7 @@ limit
 
 ### One package
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -54,15 +40,3 @@ where
   and id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  protocol_type,
-  versions
-from
-  azuredevopssh_package
-where
-  feed_id = '00000000-0000-0000-0000-000000000000'
-  and id = '00000000-0000-0000-0000-000000000000';
-```

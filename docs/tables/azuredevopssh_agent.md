@@ -11,7 +11,7 @@ An agent runs pipeline jobs. Set `pool_id` to read one pool. A query without `po
 
 ### Agents in a pool
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -27,18 +27,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  version,
-  status,
-  enabled,
-  os_description
-from
-  azuredevopssh_agent
-where
-  pool_id = 1
-limit
-  20;
-```

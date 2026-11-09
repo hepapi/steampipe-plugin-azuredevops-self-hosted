@@ -11,23 +11,7 @@ A test point is one test case paired with a configuration inside a suite. `proje
 
 ### Points in a suite
 
-```sql+postgres
-select
-  id,
-  test_case_id,
-  test_case_name,
-  configuration_name,
-  outcome,
-  is_active
-from
-  azuredevopssh_test_point
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and plan_id = 12
-  and suite_id = 34;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   test_case_id,
@@ -45,7 +29,7 @@ where
 
 ### Failed points
 
-```sql+postgres
+```sql
 select
   id,
   test_case_name,
@@ -60,17 +44,3 @@ where
   and outcome = 'failed';
 ```
 
-```sql+sqlite
-select
-  id,
-  test_case_name,
-  configuration_name,
-  tester
-from
-  azuredevopssh_test_point
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and plan_id = 12
-  and suite_id = 34
-  and outcome = 'failed';
-```

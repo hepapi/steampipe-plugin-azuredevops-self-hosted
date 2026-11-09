@@ -11,20 +11,7 @@ A feed stores packages for one protocol or several. The `azuredevopssh_feed` tab
 
 ### Collection feeds
 
-```sql+postgres
-select
-  id,
-  name,
-  project_id,
-  upstream_enabled,
-  hide_deleted_package_versions
-from
-  azuredevopssh_feed
-limit
-  20;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -39,7 +26,7 @@ limit
 
 ### Feeds in one project
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -50,13 +37,3 @@ where
   project_id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  description
-from
-  azuredevopssh_feed
-where
-  project_id = '00000000-0000-0000-0000-000000000000';
-```

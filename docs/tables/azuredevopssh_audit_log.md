@@ -11,7 +11,7 @@ An audit log entry records an action in the collection, such as creating a repos
 
 ### Recent audit events
 
-```sql+postgres
+```sql
 select
   id,
   action_id,
@@ -26,17 +26,3 @@ limit
   20;
 ```
 
-```sql+sqlite
-select
-  id,
-  action_id,
-  actor_display_name,
-  project_name,
-  timestamp
-from
-  azuredevopssh_audit_log
-order by
-  timestamp desc
-limit
-  20;
-```

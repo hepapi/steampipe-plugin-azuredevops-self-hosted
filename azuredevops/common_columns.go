@@ -77,8 +77,8 @@ func getOrganizationUncached(ctx context.Context, d *plugin.QueryData, h *plugin
 
 // organizationName derives the organization (SaaS) or collection (self-hosted)
 // name from the organization_url. For self-hosted URLs such as
-// https://code.digiturk.net/SCMPOCCollection it returns the last path segment
-// (SCMPOCCollection). For SaaS URLs such as https://dev.azure.com/org it
+// https://azuredevops.example.com/DefaultCollection it returns the last path segment
+// (DefaultCollection). For SaaS URLs such as https://dev.azure.com/org it
 // returns the last path segment (org). If there is no path segment, it falls
 // back to the host.
 func organizationName(organizationURL string) string {

@@ -5,7 +5,7 @@ description: "Allows users to query Azure DevOps Pipelines, specifically the det
 
 # Table: azuredevopssh_pipeline - Query Azure DevOps Pipelines using SQL
 
-Azure DevOps Pipelines is a cloud service that you can use to automatically build, test, and deploy your code project to any platform. It helps you catch bugs early in the development process and deploy updates more frequently and with higher quality. It supports continuous integration (CI) and continuous delivery (CD) to constantly and consistently test and build your code and ship it to any target.
+The `azuredevopssh_pipeline` table lists YAML pipelines in a team project, including folder, revision, and configuration. Runs are in `azuredevopssh_pipeline_run`.
 
 ## Table Usage Guide
 
@@ -16,19 +16,7 @@ The `azuredevopssh_pipeline` table provides insights into pipelines within Azure
 ### Basic info
 Explore which Azure DevOps pipelines are currently active, identifying their unique identifiers and names. This can be particularly useful for project managers and developers to gain insights into the status and revision history of their ongoing projects.
 
-```sql+postgres
-select
-  id,
-  name,
-  configuration_type,
-  project_id,
-  folder,
-  revision
-from
-  azuredevopssh_pipeline;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -43,21 +31,7 @@ from
 ### List yaml based pipelines
 Explore which Azure DevOps pipelines are based on YAML configurations. This can be useful in identifying pipelines that follow this specific format for potential updates or troubleshooting.
 
-```sql+postgres
-select
-  id,
-  name,
-  configuration_type,
-  project_id,
-  folder,
-  revision
-from
-  azuredevopssh_pipeline
-where
-  configuration_type = 'yaml';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -74,23 +48,7 @@ where
 ### List pipelines associated with a particular project
 Explore which pipelines are associated with a specific project in Azure DevOps. This is useful for managing and organizing project resources efficiently.
 
-```sql+postgres
-select
-  l.id as pipeline_id,
-  l.name as pipeline_name,
-  configuration_type,
-  project_id,
-  folder,
-  l.revision
-from
-  azuredevopssh_pipeline as l,
-  azuredevopssh_project as p
-where
-  l.project_id = p.id
-  and p.name = 'private_project';
-```
-
-```sql+sqlite
+```sql
 select
   l.id as pipeline_id,
   l.name as pipeline_name,

@@ -16,17 +16,7 @@ The `azuredevopssh_policy_type` table provides the catalog of policy types in ea
 ### Basic info
 List policy types and the project they were read from.
 
-```sql+postgres
-select
-  id,
-  project_id,
-  display_name,
-  description
-from
-  azuredevopssh_policy_type;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   project_id,
@@ -39,18 +29,7 @@ from
 ### List policy types in one project
 Limit the catalog to a single project.
 
-```sql+postgres
-select
-  id,
-  display_name,
-  description
-from
-  azuredevopssh_policy_type
-where
-  project_id = 'bdcdf70b-7757-4253-b36c-33c08ca07dbb';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   display_name,
@@ -64,7 +43,7 @@ where
 ### Find the status check policy type
 Look up the policy type used for status checks.
 
-```sql+postgres
+```sql
 select
   id,
   project_id,
@@ -75,13 +54,3 @@ where
   lower(display_name) in ('status', 'required status checks', 'status checks');
 ```
 
-```sql+sqlite
-select
-  id,
-  project_id,
-  display_name
-from
-  azuredevopssh_policy_type
-where
-  lower(display_name) in ('status', 'required status checks', 'status checks');
-```

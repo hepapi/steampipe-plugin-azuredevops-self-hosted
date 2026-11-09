@@ -11,22 +11,7 @@ A test case is the work item executed from a suite. `project_id`, `plan_id`, and
 
 ### Cases in a suite
 
-```sql+postgres
-select
-  id,
-  name,
-  "order"
-from
-  azuredevopssh_test_case
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and plan_id = 12
-  and suite_id = 34
-order by
-  "order";
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -43,7 +28,7 @@ order by
 
 ### One case
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -57,16 +42,3 @@ where
   and id = 1001;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  point_assignments
-from
-  azuredevopssh_test_case
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and plan_id = 12
-  and suite_id = 34
-  and id = 1001;
-```

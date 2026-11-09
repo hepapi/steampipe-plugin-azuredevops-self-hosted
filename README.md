@@ -1,49 +1,47 @@
-![image](https://hub.steampipe.io/images/plugins/turbot/azuredevops-social-graphic.png)
+# Azure DevOps Server plugin for Steampipe
 
-# Azure DevOps Plugin for Steampipe
+Query a self-hosted Azure DevOps Server with SQL. This is Hepapi's unofficial plugin for Azure DevOps Server 2022.1. It started from [Turbot's azuredevops plugin](https://github.com/turbot/steampipe-plugin-azuredevops) and adds collection, Git, policy, build, release, work item, test, identity, artifact, wiki, search, audit, extension, and agent tables.
 
-Use SQL to query projects, groups, builds and more from Azure DevOps.
+SQL tables use the `azuredevopssh_` prefix, so this plugin can be installed beside Turbot's `azuredevops` plugin. The config file and connection name remain `azuredevops`.
 
-- **[Get started →](https://hub.steampipe.io/plugins/turbot/azuredevops)**
-- Documentation: [Table definitions & examples](https://hub.steampipe.io/plugins/turbot/azuredevops/tables)
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
-- Get involved: [Issues](https://github.com/turbot/steampipe-plugin-azuredevops/issues)
+- Documentation: [docs/index.md](docs/index.md)
+- Issues: [hepapi/steampipe-plugin-azuredevops-self-hosted](https://github.com/hepapi/steampipe-plugin-azuredevops-self-hosted/issues)
 
 ## Quick start
 
-Download and install the latest Azure DevOps plugin:
+Install the plugin:
 
 ```bash
-steampipe plugin install azuredevops
+steampipe plugin install ghcr.io/hepapi/azuredevopssh
 ```
 
-Configure your [credentials](https://hub.steampipe.io/plugins/turbot/azuredevops#credentials) and [config file](https://hub.steampipe.io/plugins/turbot/azuredevops#configuration).
-
-Configure the Organization URL and Personal Access Token in `~/.steampipe/config/azuredevops.spc`:
+The first install creates `~/.steampipe/config/azuredevops.spc` with a connection named `azuredevops`. Set the collection URL and a personal access token:
 
 ```hcl
 connection "azuredevops" {
-  plugin = "azuredevops"
-  # Authentication information
-  organization_url = "https://dev.azure.com/test"
-  personal_access_token = "wf3hahidy7i7fkzmeqr3e6fbjwuspabpo766grp7hl4o65v2"
+  plugin = "ghcr.io/hepapi/azuredevopssh"
+
+  # Collection URL on Azure DevOps Server. Required.
+  # organization_url = "https://azuredevops.example.com/DefaultCollection"
+
+  # Server root. Optional. Used by azuredevopssh_project_collection.
+  # When unset, it is derived by stripping the last path segment of organization_url.
+  # server_url = "https://azuredevops.example.com/"
+
+  # personal_access_token = "..."
 }
 ```
 
-Or through environment variables:
+The same two values can come from the environment when the connection leaves them unset:
 
 ```sh
-export AZDO_ORG_SERVICE_URL=https://dev.azure.com/test
-export AZDO_PERSONAL_ACCESS_TOKEN=wf3hahidy7i7fkzmeqr3e6fbjwuspabpo766grp7hl4o65v2
+export AZDO_ORG_SERVICE_URL=https://azuredevops.example.com/DefaultCollection
+export AZDO_PERSONAL_ACCESS_TOKEN=...
 ```
 
-Run steampipe:
+An Azure DevOps Services organization URL (`https://dev.azure.com/{organization}`) works for APIs that exist there. `server_url` is only used to list project collections on a self-hosted server.
 
-```shell
-steampipe query
-```
-
-List your Azure DevOps projects:
+Run a query:
 
 ```sql
 select
@@ -55,77 +53,34 @@ from
   azuredevopssh_project;
 ```
 
-```
-+--------------------------------------+-----------------+------------+------------+
-| id                                   | name            | state      | visibility |
-+--------------------------------------+-----------------+------------+------------+
-| bdcdf70b-7757-4253-b36c-33c08ca07dbb | test-1          | wellFormed | private    |
-| 9a1f26ce-c715-4ef4-b557-503fdb6be55a | private_project | wellFormed | private    |
-+--------------------------------------+-----------------+------------+------------+
-```
+Table definitions, server caveats, and more examples are in [docs/index.md](docs/index.md).
 
 ## Engines
 
-This plugin is available for the following engines:
-
-| Engine        | Description
-|---------------|------------------------------------------
-| [Steampipe](https://steampipe.io/docs) | The Steampipe CLI exposes APIs and services as a high-performance relational database, giving you the ability to write SQL-based queries to explore dynamic data. Mods extend Steampipe's capabilities with dashboards, reports, and controls built with simple HCL. The Steampipe CLI is a turnkey solution that includes its own Postgres database, plugin management, and mod support.
-| [Postgres FDW](https://steampipe.io/docs/steampipe_postgres/overview) | Steampipe Postgres FDWs are native Postgres Foreign Data Wrappers that translate APIs to foreign tables. Unlike Steampipe CLI, which ships with its own Postgres server instance, the Steampipe Postgres FDWs can be installed in any supported Postgres database version.
-| [SQLite Extension](https://steampipe.io/docs/steampipe_sqlite/overview) | Steampipe SQLite Extensions provide SQLite virtual tables that translate your queries into API calls, transparently fetching information from your API or service as you request it.
-| [Export](https://steampipe.io/docs/steampipe_export/overview) | Steampipe Plugin Exporters provide a flexible mechanism for exporting information from cloud services and APIs. Each exporter is a stand-alone binary that allows you to extract data using Steampipe plugins without a database.
-| [Turbot Pipes](https://turbot.com/pipes/docs) | Turbot Pipes is the only intelligence, automation & security platform built specifically for DevOps. Pipes provide hosted Steampipe database instances, shared dashboards, snapshots, and more.
+| Engine | Description |
+| --- | --- |
+| [Steampipe](https://steampipe.io/docs) | Install the plugin into the Steampipe CLI and query it with SQL. |
 
 ## Developing
 
-Prerequisites:
-
-- [Steampipe](https://steampipe.io/downloads)
-- [Golang](https://golang.org/doc/install)
-
-Clone:
+Prerequisites: [Steampipe](https://steampipe.io/downloads) and [Go](https://go.dev/doc/install).
 
 ```sh
-git clone https://github.com/turbot/steampipe-plugin-azuredevops.git
-cd steampipe-plugin-azuredevops
-```
-
-Build, which automatically installs the new version to your `~/.steampipe/plugins` directory:
-
-```
+git clone https://github.com/hepapi/steampipe-plugin-azuredevops-self-hosted.git
+cd steampipe-plugin-azuredevops-self-hosted
 make
-```
-
-Configure the plugin:
-
-```
 cp config/* ~/.steampipe/config
-vi ~/.steampipe/config/azuredevops.spc
 ```
 
-Try it!
+`make` builds the plugin into `~/.steampipe/plugins`. Then:
 
 ```
 steampipe query
 > .inspect azuredevops
 ```
 
-Further reading:
+Further reading: [Writing plugins](https://steampipe.io/docs/develop/writing-plugins).
 
-- [Writing plugins](https://steampipe.io/docs/develop/writing-plugins)
-- [Writing your first table](https://steampipe.io/docs/develop/writing-your-first-table)
+## License
 
-## Open Source & Contributing
-
-This repository is published under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) (source code) and [CC BY-NC-ND](https://creativecommons.org/licenses/by-nc-nd/2.0/) (docs) licenses. Please see our [code of conduct](https://github.com/turbot/.github/blob/main/CODE_OF_CONDUCT.md). We look forward to collaborating with you!
-
-[Steampipe](https://steampipe.io) is a product produced from this open source software, exclusively by [Turbot HQ, Inc](https://turbot.com). It is distributed under our commercial terms. Others are allowed to make their own distribution of the software, but cannot use any of the Turbot trademarks, cloud services, etc. You can learn more in our [Open Source FAQ](https://turbot.com/open-source).
-
-## Get Involved
-
-**[Join #steampipe on Slack →](https://turbot.com/community/join)**
-
-Want to help but don't know where to start? Pick up one of the `help wanted` issues:
-
-- [Steampipe](https://github.com/turbot/steampipe/labels/help%20wanted)
-- [Azure DevOps Plugin](https://github.com/turbot/steampipe-plugin-azuredevops/labels/help%20wanted)
+Source code is [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0). Documentation is [CC BY-NC-ND 4.0](docs/LICENSE).

@@ -16,20 +16,7 @@ The `azuredevopssh_servicehook_subscription` table provides service hook subscri
 ### Basic info
 List subscriptions with the event they listen for and the consumer that receives it.
 
-```sql+postgres
-select
-  id,
-  publisher_id,
-  event_type,
-  consumer_id,
-  consumer_action_id,
-  status,
-  created_date
-from
-  azuredevopssh_servicehook_subscription;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   publisher_id,
@@ -45,21 +32,7 @@ from
 ### List enabled web hook subscriptions
 Find subscriptions that are enabled and delivered to a web hook.
 
-```sql+postgres
-select
-  id,
-  event_type,
-  action_description,
-  publisher_inputs,
-  consumer_inputs
-from
-  azuredevopssh_servicehook_subscription
-where
-  status = 'enabled'
-  and consumer_id = 'webHooks';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   event_type,
@@ -76,7 +49,7 @@ where
 ### List subscriptions for one event
 Limit the list to pull request created events.
 
-```sql+postgres
+```sql
 select
   id,
   status,
@@ -90,16 +63,3 @@ where
   and event_type = 'git.pullrequest.created';
 ```
 
-```sql+sqlite
-select
-  id,
-  status,
-  consumer_id,
-  consumer_action_id,
-  created_by
-from
-  azuredevopssh_servicehook_subscription
-where
-  publisher_id = 'tfs'
-  and event_type = 'git.pullrequest.created';
-```

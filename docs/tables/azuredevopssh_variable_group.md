@@ -13,7 +13,7 @@ The `variables` column is the map returned by Azure DevOps. It includes secret v
 
 ### Variable groups in a project
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -25,14 +25,3 @@ where
   project_id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  type,
-  is_shared
-from
-  azuredevopssh_variable_group
-where
-  project_id = '00000000-0000-0000-0000-000000000000';
-```

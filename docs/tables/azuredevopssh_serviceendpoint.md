@@ -24,19 +24,7 @@ The `azuredevopssh_serviceendpoint` table provides insights into Service Endpoin
 ### Basic info
 Explore the readiness and sharing status of Azure DevOps service endpoints to understand their accessibility and ownership. This can help in identifying any potential issues or risks related to endpoint accessibility and management.
 
-```sql+postgres
-select
-  id,
-  name,
-  is_ready,
-  is_shared,
-  owner,
-  type
-from
-  azuredevopssh_serviceendpoint;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -51,7 +39,7 @@ from
 ### List service endpoints which are not ready
 Explore which Azure DevOps service endpoints are not ready for use. This can be beneficial in identifying potential issues in your deployment pipeline.
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -65,24 +53,10 @@ where
   not is_ready;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  is_ready,
-  is_shared,
-  owner,
-  type
-from
-  azuredevopssh_serviceendpoint
-where
-  is_ready = 0;
-```
-
 ### List shared service endpoints
 Analyze the settings to understand which service endpoints in Azure DevOps are shared, providing insights into how resources are being utilized across different teams or projects. This can aid in resource optimization and improve collaboration efficiency.
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -96,38 +70,10 @@ where
   is_shared;
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  is_ready,
-  is_shared,
-  owner,
-  type
-from
-  azuredevopssh_serviceendpoint
-where
-  is_shared = 1;
-```
-
 ### List service endpoints owned by library
 Discover the segments that are owned by a specific entity in Azure DevOps. This is useful for understanding who has control over certain resources and can aid in resource management.
 
-```sql+postgres
-select
-  id,
-  name,
-  is_ready,
-  is_shared,
-  owner,
-  type
-from
-  azuredevopssh_serviceendpoint
-where
-  owner = 'Library';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -144,7 +90,7 @@ where
 ### Get creator details of the service endpoints
 Explore the creators of service endpoints, gaining insights into their unique identifiers and display names to understand who has set up each endpoint. This can be useful for auditing or tracking changes in your Azure DevOps environment.
 
-```sql+postgres
+```sql
 select
   name,
   created_by ->> 'id' as id,
@@ -153,19 +99,6 @@ select
   created_by ->> 'descriptor' as descriptor,
   created_by ->> 'url' as url,
   created_by ->> 'imageUrl' as image_url
-from
-  azuredevopssh_serviceendpoint;
-```
-
-```sql+sqlite
-select
-  name,
-  json_extract(created_by, '$.id') as id,
-  json_extract(created_by, '$.displayName') as display_name,
-  json_extract(created_by, '$.uniqueName') as unique_name,
-  json_extract(created_by, '$.descriptor') as descriptor,
-  json_extract(created_by, '$.url') as url,
-  json_extract(created_by, '$.imageUrl') as image_url
 from
   azuredevopssh_serviceendpoint;
 ```

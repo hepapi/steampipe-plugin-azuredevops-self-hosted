@@ -15,21 +15,7 @@ On Azure DevOps Server 2022.1 the v7 location id for this API is not registered.
 
 ### Find a collection group
 
-```sql+postgres
-select
-  id,
-  descriptor,
-  subject_descriptor,
-  provider_display_name,
-  is_container
-from
-  azuredevopssh_identity
-where
-  search_filter = 'LocalGroupName'
-  and filter_value = 'Project Collection Administrators';
-```
-
-```sql+sqlite
+```sql
 select
   id,
   descriptor,
@@ -45,7 +31,7 @@ where
 
 ### One identity by id
 
-```sql+postgres
+```sql
 select
   id,
   provider_display_name,
@@ -57,14 +43,3 @@ where
   id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  provider_display_name,
-  is_active,
-  member_of
-from
-  azuredevopssh_identity
-where
-  id = '00000000-0000-0000-0000-000000000000';
-```

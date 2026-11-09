@@ -17,21 +17,7 @@ Use this table to see which stages succeeded, failed, or are still running. `def
 
 ### Recent release stages
 
-```sql+postgres
-select
-  project_id,
-  release_id,
-  id,
-  name,
-  status,
-  rank,
-  time_to_deploy
-from
-  azuredevopssh_release_environment
-limit 20;
-```
-
-```sql+sqlite
+```sql
 select
   project_id,
   release_id,
@@ -47,7 +33,7 @@ limit 20;
 
 ### Stages of one release
 
-```sql+postgres
+```sql
 select
   name,
   status,
@@ -63,18 +49,3 @@ order by
   rank;
 ```
 
-```sql+sqlite
-select
-  name,
-  status,
-  rank,
-  created_on,
-  modified_on
-from
-  azuredevopssh_release_environment
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and release_id = 42
-order by
-  rank;
-```

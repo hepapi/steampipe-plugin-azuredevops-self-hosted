@@ -18,17 +18,7 @@ The `azuredevopssh_project_collection` table provides insights into project coll
 ### Basic info
 List all project collections on the server.
 
-```sql+postgres
-select
-  id,
-  name,
-  url,
-  state
-from
-  azuredevopssh_project_collection;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   name,
@@ -41,7 +31,7 @@ from
 ### Get a specific collection
 Retrieve details for a collection by its ID.
 
-```sql+postgres
+```sql
 select
   id,
   name,
@@ -54,15 +44,3 @@ where
   id = '00000000-0000-0000-0000-000000000000';
 ```
 
-```sql+sqlite
-select
-  id,
-  name,
-  description,
-  state,
-  process_customization_type
-from
-  azuredevopssh_project_collection
-where
-  id = '00000000-0000-0000-0000-000000000000';
-```

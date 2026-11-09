@@ -17,25 +17,7 @@ Use this table to inspect work item state, ownership, area and iteration paths, 
 
 ### Open bugs in a project
 
-```sql+postgres
-select
-  id,
-  title,
-  state,
-  assigned_to_name,
-  priority,
-  changed_date
-from
-  azuredevopssh_work_item
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and work_item_type = 'Bug'
-  and state = 'Active'
-order by
-  changed_date desc;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   title,
@@ -55,22 +37,7 @@ order by
 
 ### One work item
 
-```sql+postgres
-select
-  id,
-  rev,
-  title,
-  work_item_type,
-  state,
-  url
-from
-  azuredevopssh_work_item
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-  and id = 42;
-```
-
-```sql+sqlite
+```sql
 select
   id,
   rev,
@@ -87,7 +54,7 @@ where
 
 ### Count work items by type
 
-```sql+postgres
+```sql
 select
   work_item_type,
   count(*) as work_items
@@ -101,16 +68,3 @@ order by
   work_items desc;
 ```
 
-```sql+sqlite
-select
-  work_item_type,
-  count(*) as work_items
-from
-  azuredevopssh_work_item
-where
-  project_id = '00000000-0000-0000-0000-000000000000'
-group by
-  work_item_type
-order by
-  work_items desc;
-```
