@@ -39,7 +39,6 @@ func resolveCollectionPlan(config azureDevOpsConfig) collectionPlan {
 	allow := normalizeCollectionNames(config.Collections)
 	deny := normalizeCollectionNames(config.ExcludedCollections)
 	if collectionListIsWildcard(allow) {
-		allow = nil
 		return collectionPlan{
 			Multi:     true,
 			ServerURL: getServerURL(config),
