@@ -174,6 +174,9 @@ func getGroup(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (
 
 	output, err := client.GetGroup(ctx, input)
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_group.getGroup", "api_error", err)
 		return nil, err
 	}

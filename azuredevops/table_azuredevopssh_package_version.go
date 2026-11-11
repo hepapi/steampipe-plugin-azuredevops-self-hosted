@@ -211,6 +211,9 @@ func getPackageVersion(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydra
 		IncludeUrls:      boolPtr(true),
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_package_version.getPackageVersion", "api_error", err)
 		return nil, err
 	}

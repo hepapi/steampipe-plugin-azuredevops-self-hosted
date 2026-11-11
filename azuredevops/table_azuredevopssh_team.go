@@ -148,6 +148,9 @@ func getTeam(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 
 	team, err := client.GetTeam(ctx, input)
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_team.getTeam", "api_error", err)
 		return nil, err
 	}

@@ -221,6 +221,9 @@ func getTestPoint(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 		IncludePointDetails: &details,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_test_point.getTestPoint", "project_id", projectID, "plan_id", plan, "suite_id", suite, "id", point, "api_error", err)
 		return nil, err
 	}

@@ -5,7 +5,7 @@ description: "Allows users to query agents in an Azure DevOps agent pool."
 
 # Table: azuredevopssh_agent - Query Azure DevOps Agents using SQL
 
-An agent runs pipeline jobs. Set `pool_id` to read one pool. A query without `pool_id` visits pools until the SQL `limit` is reached. `id` and `pool_id` together fetch one agent.
+An agent runs pipeline jobs. Agents belong to a deployment pool, so a server-root connection reads them once from the server rather than once per collection. Set `pool_id` to read one pool. A query without `pool_id` visits pools until the SQL `limit` is reached. `id` and `pool_id` together fetch one agent.
 
 ## Examples
 

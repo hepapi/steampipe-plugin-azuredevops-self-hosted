@@ -3,7 +3,6 @@ package azuredevops
 import (
 	"context"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
@@ -61,18 +60,30 @@ func getOrganization(ctx context.Context, d *plugin.QueryData, h *plugin.Hydrate
 
 // Build a cache key for the call to getOrganizationCacheKey.
 func getOrganizationCacheKey(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	key := "getOrganization"
-	return key, nil
+	if name := matrixOrganization(d); name != "" {
+		return "getOrganization|" + name, nil
+	}
+	return "getOrganization", nil
 }
 
 func getOrganizationUncached(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	organizationURL := os.Getenv("AZDO_ORG_SERVICE_URL")
-	org := GetConfig(d.Connection)
-	if org.OrganizationURL != nil {
-		organizationURL = *org.OrganizationURL
+	if name := matrixOrganization(d); name != "" {
+		return name, nil
 	}
+	var config azureDevOpsConfig
+	if d != nil {
+		config = GetConfig(d.Connection)
+	}
+	return organizationName(configuredOrganizationURL(config)), nil
+}
 
-	return organizationName(organizationURL), nil
+// matrixOrganization is the collection name for the current matrix item.
+// Server-scoped tables have no matrix item and keep the host-level name.
+func matrixOrganization(d *plugin.QueryData) string {
+	if qualString(d, "collection_url") == "" {
+		return ""
+	}
+	return qualString(d, "organization")
 }
 
 // organizationName derives the organization (SaaS) or collection (self-hosted)

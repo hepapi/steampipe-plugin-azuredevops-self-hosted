@@ -15,6 +15,11 @@ type azureDevOpsConfig struct {
 	OrganizationURL     *string `hcl:"organization_url"`
 	ServerURL           *string `hcl:"server_url"`
 	PersonalAccessToken *string `hcl:"personal_access_token"`
+	// Collections limits a server-root connection to these collection names.
+	// "*" discovers every collection. Ignored when the connection is a single collection URL and ExcludedCollections is also empty.
+	Collections []string `hcl:"collections,optional"`
+	// ExcludedCollections drops these collection names after discovery or after Collections is applied.
+	ExcludedCollections []string `hcl:"excluded_collections,optional"`
 }
 
 func ConfigInstance() interface{} {
@@ -32,24 +37,48 @@ func GetConfig(connection *plugin.Connection) azureDevOpsConfig {
 }
 
 func getConnection(ctx context.Context, d *plugin.QueryData) (*azuredevops.Connection, error) {
-	azureDevOpsConfig := GetConfig(d.Connection)
-
-	organizationURL := os.Getenv("AZDO_ORG_SERVICE_URL")
-	personalAccessToken := os.Getenv("AZDO_PERSONAL_ACCESS_TOKEN")
-
-	if azureDevOpsConfig.OrganizationURL != nil {
-		organizationURL = *azureDevOpsConfig.OrganizationURL
-	}
-	if azureDevOpsConfig.PersonalAccessToken != nil {
-		personalAccessToken = *azureDevOpsConfig.PersonalAccessToken
+	config := GetConfig(connectionConfig(d))
+	if message := qualString(d, "collection_error"); message != "" {
+		return nil, errors.New(message)
 	}
 
-	if organizationURL != "" && personalAccessToken != "" {
-		connection := azuredevops.NewPatConnection(organizationURL, personalAccessToken)
+	serviceURL := configuredOrganizationURL(config)
+	token := personalAccessToken(config)
+	if collectionURL := qualString(d, "collection_url"); collectionURL != "" {
+		serviceURL = collectionURL
+	} else if d != nil && d.Table != nil && isServerScopedTable(d.Table.Name) && resolveCollectionPlan(config).Multi {
+		serviceURL = getServerURL(config)
+	}
+
+	if serviceURL != "" && token != "" {
+		connection := azuredevops.NewPatConnection(serviceURL, token)
 		return connection, nil
 	}
 
 	return nil, errors.New("'organization_url' and 'personal_access_token' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+}
+
+func connectionConfig(d *plugin.QueryData) *plugin.Connection {
+	if d == nil {
+		return nil
+	}
+	return d.Connection
+}
+
+func configuredOrganizationURL(config azureDevOpsConfig) string {
+	value := os.Getenv("AZDO_ORG_SERVICE_URL")
+	if config.OrganizationURL != nil {
+		value = *config.OrganizationURL
+	}
+	return value
+}
+
+func personalAccessToken(config azureDevOpsConfig) string {
+	value := os.Getenv("AZDO_PERSONAL_ACCESS_TOKEN")
+	if config.PersonalAccessToken != nil {
+		value = *config.PersonalAccessToken
+	}
+	return value
 }
 
 // getServerURL returns the Azure DevOps server root URL used to enumerate
@@ -66,14 +95,11 @@ func getServerURL(config azureDevOpsConfig) string {
 		return strings.TrimRight(*config.ServerURL, "/")
 	}
 
-	organizationURL := os.Getenv("AZDO_ORG_SERVICE_URL")
-	if config.OrganizationURL != nil {
-		organizationURL = *config.OrganizationURL
-	}
+	serviceURL := configuredOrganizationURL(config)
 
-	u, err := url.Parse(organizationURL)
+	u, err := url.Parse(serviceURL)
 	if err != nil {
-		return organizationURL
+		return serviceURL
 	}
 
 	// Strip the last path segment (the collection/org name) to get the server root.
@@ -90,16 +116,13 @@ func getServerURL(config azureDevOpsConfig) string {
 // enumerating project collections), as opposed to getConnection which targets
 // the organization/collection URL.
 func getServerConnection(ctx context.Context, d *plugin.QueryData) (*azuredevops.Connection, error) {
-	config := GetConfig(d.Connection)
+	config := GetConfig(connectionConfig(d))
 
 	serverURL := getServerURL(config)
-	personalAccessToken := os.Getenv("AZDO_PERSONAL_ACCESS_TOKEN")
-	if config.PersonalAccessToken != nil {
-		personalAccessToken = *config.PersonalAccessToken
-	}
+	token := personalAccessToken(config)
 
-	if serverURL != "" && personalAccessToken != "" {
-		connection := azuredevops.NewPatConnection(serverURL, personalAccessToken)
+	if serverURL != "" && token != "" {
+		connection := azuredevops.NewPatConnection(serverURL, token)
 		return connection, nil
 	}
 

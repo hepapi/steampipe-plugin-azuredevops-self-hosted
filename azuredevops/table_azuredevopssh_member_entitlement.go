@@ -171,8 +171,14 @@ func getMemberEntitlement(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 		return nil, nil
 	}
 	items, err := searchMemberEntitlements(ctx, d, "azuredevopssh_member_entitlement.getMemberEntitlement", "")
-	if err != nil || items == nil {
+	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		return nil, err
+	}
+	if items == nil {
+		return nil, nil
 	}
 	for _, item := range *items {
 		if item.Id != nil && item.Id.String() == id {

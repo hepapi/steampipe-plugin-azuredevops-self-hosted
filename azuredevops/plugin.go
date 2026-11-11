@@ -82,5 +82,6 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevopssh_work_item":                    tableAzureDevOpsWorkItem(ctx),
 		},
 	}
+	attachCollectionMatrix(p)
 	return p
 }

@@ -7,7 +7,7 @@ description: "Allows users to query project collections in a self-hosted Azure D
 
 Azure DevOps Server (self-hosted) organizes team projects into **project collections**. The `azuredevopssh_project_collection` table provides insights into these collections, including their name, URL, description, and state.
 
-This table is primarily useful for self-hosted deployments. It enumerates collections at the server root (`server_url`), which is derived from `organization_url` by stripping the collection path segment (or set explicitly via the `server_url` config).
+This table is primarily useful for self-hosted deployments. It enumerates collections at the server root (`server_url`), which is derived from `organization_url` by stripping the collection path segment (or set explicitly via the `server_url` config). `collections` and `excluded_collections` do not filter this table, so a denied TFVC collection still appears here.
 
 ## Table Usage Guide
 

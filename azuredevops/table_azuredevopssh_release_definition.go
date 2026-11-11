@@ -227,6 +227,9 @@ func getReleaseDefinition(ctx context.Context, d *plugin.QueryData, _ *plugin.Hy
 		DefinitionId: &definitionID,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_release_definition.getReleaseDefinition", "project_id", projectID, "id", definitionID, "api_error", err)
 		return nil, err
 	}

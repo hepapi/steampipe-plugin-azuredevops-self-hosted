@@ -233,6 +233,9 @@ func getTestResult(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDa
 		TestCaseResultId: &result,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_test_result.getTestResult", "project_id", projectID, "run_id", run, "id", result, "api_error", err)
 		return nil, err
 	}

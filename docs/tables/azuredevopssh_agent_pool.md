@@ -5,7 +5,7 @@ description: "Allows users to query Azure DevOps agent pools."
 
 # Table: azuredevopssh_agent_pool - Query Azure DevOps Agent Pools using SQL
 
-An agent pool is a set of build and release agents. The `azuredevopssh_agent_pool` table lists pools in the collection. `id` fetches one pool. `name` filters by pool name.
+An agent pool is a set of build and release agents. Pools are registered on the Azure DevOps Server deployment, so a server-root connection reads them once and does not repeat them per collection. A single-collection URL keeps calling that collection. `id` fetches one pool. `name` filters by pool name.
 
 ## Examples
 

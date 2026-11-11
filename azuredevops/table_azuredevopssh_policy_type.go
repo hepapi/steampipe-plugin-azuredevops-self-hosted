@@ -163,6 +163,9 @@ func getPolicyType(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateDa
 		TypeId:  &typeID,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_policy_type.getPolicyType", "project_id", projectID, "id", id, "api_error", err)
 		return nil, err
 	}

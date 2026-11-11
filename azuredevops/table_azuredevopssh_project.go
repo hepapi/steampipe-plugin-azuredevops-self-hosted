@@ -252,6 +252,9 @@ func getProject(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData)
 
 	project, err := client.GetProject(ctx, input)
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_project.getProject", "api_error", err)
 		return nil, err
 	}

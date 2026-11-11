@@ -126,6 +126,9 @@ func getExtension(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 		ExtensionName: &extensionID,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_extension.getExtension", "api_error", err)
 		return nil, err
 	}

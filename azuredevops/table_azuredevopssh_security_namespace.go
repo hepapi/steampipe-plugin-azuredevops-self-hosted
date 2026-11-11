@@ -181,6 +181,9 @@ func getSecurityNamespace(ctx context.Context, d *plugin.QueryData, h *plugin.Hy
 		SecurityNamespaceId: &parsed,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_security_namespace.getSecurityNamespace", "namespace_id", id, "api_error", err)
 		return nil, err
 	}

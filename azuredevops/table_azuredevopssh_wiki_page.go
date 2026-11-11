@@ -184,6 +184,9 @@ func getWikiPage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		IncludeContent: boolPtr(true),
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_wiki_page.getWikiPage", "api_error", err)
 		return nil, err
 	}

@@ -215,6 +215,9 @@ func getGitRepositoryBranchPolicy(ctx context.Context, d *plugin.QueryData, h *p
 
 	configuration, err := client.GetPolicyConfiguration(ctx, input)
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_git_repository_branch_policy.getGitRepositoryBranchPolicy", "api_error", err)
 		return nil, err
 	}

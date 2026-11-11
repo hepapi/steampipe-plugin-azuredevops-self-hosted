@@ -11,7 +11,7 @@ engines: ["steampipe"]
 
 # Azure DevOps Server + Steampipe
 
-[Steampipe](https://steampipe.io) queries APIs with SQL. This plugin reads a self-hosted [Azure DevOps Server](https://learn.microsoft.com/en-us/azure/devops/server/) collection. Hepapi maintains it for Server 2022.1. It began as a fork of Turbot's `azuredevops` plugin. Tables are named `azuredevopssh_*`.
+[Steampipe](https://steampipe.io) queries APIs with SQL. This plugin reads a self-hosted [Azure DevOps Server](https://learn.microsoft.com/en-us/azure/devops/server/). Point `organization_url` at one collection, or at the server root to query every collection the token can list. Hepapi maintains it for Server 2022.1. It began as a fork of Turbot's `azuredevops` plugin. Tables are named `azuredevopssh_*`.
 
 ```sql
 select
@@ -117,9 +117,9 @@ steampipe plugin install ghcr.io/hepapi/azuredevopssh
 
 | Item | Description |
 | --- | --- |
-| Credentials | A collection URL and a [personal access token](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows). On Azure DevOps Server the URL is a collection, for example `https://azuredevops.example.com/DefaultCollection`. On Azure DevOps Services it is `https://dev.azure.com/{organization}`. |
-| Permissions | The token has the same permissions as the user who created it. |
-| Radius | One connection is one collection, or one Azure DevOps Services organization. |
+| Credentials | A collection URL, or a server root, and a [personal access token](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows). A collection URL is `https://azuredevops.example.com/DefaultCollection`. A server root is `https://azuredevops.example.com`. On Azure DevOps Services the URL is `https://dev.azure.com/{organization}`. |
+| Permissions | The token has the same permissions as the user who created it. A server-root connection needs a token that can list project collections. |
+| Radius | One connection is one collection, one server, or one Azure DevOps Services organization. `collections` limits the server to an allow-list. `excluded_collections` drops named collections, which is how you skip TFVC-only collections. A name in both lists is excluded. |
 | Resolution | 1. Arguments in `~/.steampipe/config/azuredevops.spc`.<br />2. `AZDO_ORG_SERVICE_URL` and `AZDO_PERSONAL_ACCESS_TOKEN`, when those arguments are unset. |
 
 ### Configuration
@@ -130,15 +130,23 @@ Installing the plugin creates `~/.steampipe/config/azuredevops.spc` with a conne
 connection "azuredevops" {
   plugin = "ghcr.io/hepapi/azuredevopssh"
 
-  # `organization_url`: collection URL on Azure DevOps Server, or an organization URL on Azure DevOps Services. Required.
-  # Server example: https://azuredevops.example.com/DefaultCollection
+  # `organization_url`: one collection, the server root, or an Azure DevOps Services organization. Required.
+  # One collection: https://azuredevops.example.com/DefaultCollection
+  # All collections: https://azuredevops.example.com
   # Services example: https://dev.azure.com/test
   # Can also be set with AZDO_ORG_SERVICE_URL.
   # organization_url = "https://azuredevops.example.com/DefaultCollection"
 
+  # `collections`: optional allow-list of collection names. "*" discovers every collection.
+  # collections = ["DefaultCollection"]
+
+  # `excluded_collections`: optional deny-list. New collections stay in the scan until named here.
+  # excluded_collections = ["LegacyTfs"]
+
   # `server_url`: Azure DevOps Server root. Optional.
-  # Used only by azuredevopssh_project_collection.
+  # Lists project collections. Also the URL for server-scoped tables when the connection is not pinned to one collection.
   # When unset, derived from organization_url by stripping the last path segment.
+  # Set this when the server root itself has a path, such as https://azuredevops.example.com/tfs.
   # server_url = "https://azuredevops.example.com/"
 
   # `personal_access_token`: personal access token. Required.
@@ -151,6 +159,15 @@ connection "azuredevops" {
 export AZDO_ORG_SERVICE_URL=https://azuredevops.example.com/DefaultCollection
 export AZDO_PERSONAL_ACCESS_TOKEN=...
 ```
+
+A server-root `organization_url` discovers project collections and runs each collection-scoped table once per remaining collection. `where organization = 'SomeCollection'` limits that scan to one collection. `collections` and `excluded_collections` are matched without case sensitivity. A name in either list that is not on the server fails the query and reports the names that were discovered. One collection API error still fails the query.
+
+These tables are server-scoped. They run once against the server root and ignore `collections`, `excluded_collections`, and `where organization = '...'`:
+
+- [azuredevopssh_project_collection](tables/azuredevopssh_project_collection.md) lists every collection, including ones the deny-list skips elsewhere.
+- [azuredevopssh_agent_pool](tables/azuredevopssh_agent_pool.md) and [azuredevopssh_agent](tables/azuredevopssh_agent.md) read deployment pools. A pool's `auto_provision` flag creates a queue in each collection from that one pool.
+
+On a single-collection URL, server-scoped tables keep using that URL.
 
 List collections on the server:
 

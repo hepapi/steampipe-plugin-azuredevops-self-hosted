@@ -138,6 +138,9 @@ func getUserEntitlement(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydr
 
 	item, err := client.GetUserEntitlement(ctx, memberentitlementmanagement.GetUserEntitlementArgs{UserId: &userID})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_user_entitlement.getUserEntitlement", "api_error", err)
 		return nil, err
 	}

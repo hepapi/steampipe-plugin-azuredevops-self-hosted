@@ -153,6 +153,9 @@ func getFeed(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (i
 		Project: optionalProject(projectID),
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_feed.getFeed", "api_error", err)
 		return nil, err
 	}

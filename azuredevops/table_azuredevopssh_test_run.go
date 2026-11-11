@@ -237,6 +237,9 @@ func getTestRun(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		IncludeDetails: &details,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_test_run.getTestRun", "project_id", projectID, "id", runID, "api_error", err)
 		return nil, err
 	}

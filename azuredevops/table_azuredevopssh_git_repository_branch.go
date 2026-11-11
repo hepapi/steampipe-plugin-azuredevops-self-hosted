@@ -148,6 +148,9 @@ func getRepositoryBranch(ctx context.Context, d *plugin.QueryData, h *plugin.Hyd
 
 	branch, err := client.GetBranch(ctx, input)
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_git_repository_branch.getRepositoryBranch", "api_error", err)
 		return nil, err
 	}

@@ -188,6 +188,9 @@ func getPipelineApproval(ctx context.Context, d *plugin.QueryData, _ *plugin.Hyd
 		Expand:     &expand,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		if approvalNotFound(err) {
 			return nil, nil
 		}

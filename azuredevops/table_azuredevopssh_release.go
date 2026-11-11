@@ -275,6 +275,9 @@ func getRelease(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData)
 
 	release, err := client.GetRelease(ctx, input)
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_release.getRelease", "api_error", err)
 		return nil, err
 	}

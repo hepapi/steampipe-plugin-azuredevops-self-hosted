@@ -192,6 +192,9 @@ func getTestPlan(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		PlanId:  &planID,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_test_plan.getTestPlan", "project_id", projectID, "id", planID, "api_error", err)
 		return nil, err
 	}

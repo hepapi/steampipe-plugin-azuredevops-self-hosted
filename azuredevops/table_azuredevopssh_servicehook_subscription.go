@@ -220,6 +220,9 @@ func getServiceHookSubscription(ctx context.Context, d *plugin.QueryData, h *plu
 		SubscriptionId: &subscriptionID,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_servicehook_subscription.getServiceHookSubscription", "id", id, "api_error", err)
 		return nil, err
 	}

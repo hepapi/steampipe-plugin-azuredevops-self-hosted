@@ -166,6 +166,9 @@ func getIdentity(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		QueryMembership: &direct,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_identity.getIdentity", "api_error", err)
 		return nil, err
 	}

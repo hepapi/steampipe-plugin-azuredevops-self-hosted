@@ -184,6 +184,9 @@ func getUser(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (i
 
 	output, err := client.GetUser(ctx, input)
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_user.getUser", "api_error", err)
 		return nil, err
 	}

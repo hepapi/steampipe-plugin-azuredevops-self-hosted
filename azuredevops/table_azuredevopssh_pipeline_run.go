@@ -171,6 +171,9 @@ func getPipelineRun(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateD
 		RunId:      &run,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_pipeline_run.getPipelineRun", "project_id", projectID, "pipeline_id", pipeline, "id", run, "api_error", err)
 		return nil, err
 	}

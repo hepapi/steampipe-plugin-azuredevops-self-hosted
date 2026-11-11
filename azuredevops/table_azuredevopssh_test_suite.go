@@ -197,6 +197,9 @@ func getTestSuite(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateDat
 		SuiteId: &suite,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_test_suite.getTestSuite", "project_id", projectID, "plan_id", plan, "id", suite, "api_error", err)
 		return nil, err
 	}

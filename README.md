@@ -15,16 +15,24 @@ Install the plugin:
 steampipe plugin install ghcr.io/hepapi/azuredevopssh
 ```
 
-The first install creates `~/.steampipe/config/azuredevops.spc` with a connection named `azuredevops`. Set the collection URL and a personal access token:
+The first install creates `~/.steampipe/config/azuredevops.spc` with a connection named `azuredevops`. Set a personal access token and either one collection URL or the server root:
 
 ```hcl
 connection "azuredevops" {
   plugin = "ghcr.io/hepapi/azuredevopssh"
 
-  # Collection URL on Azure DevOps Server. Required.
+  # One collection. Collection-scoped tables read only this URL.
   # organization_url = "https://azuredevops.example.com/DefaultCollection"
 
-  # Server root. Optional. Used by azuredevopssh_project_collection.
+  # Server root. Collection-scoped tables run once per collection the token can list.
+  # organization_url = "https://azuredevops.example.com"
+  # Skip TFVC-only collections. New collections are included until you name them here.
+  # excluded_collections = ["LegacyTfs"]
+  # Or query only these collections.
+  # collections = ["DefaultCollection", "AnotherCollection"]
+
+  # Server root. Optional. Used to list collections and to read server-scoped tables
+  # (project collections, agent pools, and agents) when organization_url is not one collection.
   # When unset, it is derived by stripping the last path segment of organization_url.
   # server_url = "https://azuredevops.example.com/"
 
@@ -39,7 +47,7 @@ export AZDO_ORG_SERVICE_URL=https://azuredevops.example.com/DefaultCollection
 export AZDO_PERSONAL_ACCESS_TOKEN=...
 ```
 
-An Azure DevOps Services organization URL (`https://dev.azure.com/{organization}`) works for APIs that exist there. `server_url` is only used to list project collections on a self-hosted server.
+An Azure DevOps Services organization URL (`https://dev.azure.com/{organization}`) stays one organization because it has a path. `server_url` is the server root used to list project collections. On a server-root connection it is also the URL for server-scoped tables: `azuredevopssh_project_collection`, `azuredevopssh_agent_pool`, and `azuredevopssh_agent`. Those tables run once and do not take a collection qualifier. `where organization = 'SomeCollection'` narrows collection-scoped tables only.
 
 Run a query:
 

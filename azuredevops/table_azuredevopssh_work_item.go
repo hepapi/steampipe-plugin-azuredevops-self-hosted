@@ -358,6 +358,9 @@ func getWorkItem(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData
 		Expand:  &expand,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_work_item.getWorkItem", "project_id", projectID, "id", workItemID, "api_error", err)
 		return nil, err
 	}

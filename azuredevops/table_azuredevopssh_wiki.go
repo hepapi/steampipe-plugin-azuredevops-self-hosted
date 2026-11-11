@@ -123,6 +123,9 @@ func getWiki(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (i
 		Project:        optionalProject(qualString(d, "project_id")),
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_wiki.getWiki", "api_error", err)
 		return nil, err
 	}

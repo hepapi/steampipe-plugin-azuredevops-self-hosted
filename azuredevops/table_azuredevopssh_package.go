@@ -190,6 +190,9 @@ func getPackage(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 		IncludeAllVersions: boolPtr(true),
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_package.getPackage", "api_error", err)
 		return nil, err
 	}

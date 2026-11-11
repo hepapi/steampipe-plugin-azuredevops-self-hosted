@@ -229,6 +229,9 @@ func getPolicyEvaluation(ctx context.Context, d *plugin.QueryData, _ *plugin.Hyd
 		EvaluationId: &evaluationID,
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_policy_evaluation.getPolicyEvaluation", "project_id", projectID, "id", id, "api_error", err)
 		return nil, err
 	}

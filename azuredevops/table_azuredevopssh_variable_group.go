@@ -157,6 +157,9 @@ func getVariableGroup(ctx context.Context, d *plugin.QueryData, _ *plugin.Hydrat
 		GroupIds: &[]int{groupID},
 	})
 	if err != nil {
+		if absentFromCollection(d, err) {
+			return nil, nil
+		}
 		plugin.Logger(ctx).Error("azuredevopssh_variable_group.getVariableGroup", "api_error", err)
 		return nil, err
 	}
