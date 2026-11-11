@@ -78,5 +78,8 @@ func identityQueryValues(args identity.ReadIdentitiesArgs) url.Values {
 	if args.QueryMembership != nil {
 		query.Set("queryMembership", string(*args.QueryMembership))
 	}
+	if args.Properties != nil {
+		query.Set("properties", *args.Properties)
+	}
 	return query
 }

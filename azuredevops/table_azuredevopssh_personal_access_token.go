@@ -423,10 +423,12 @@ func patUserForSubject(ctx context.Context, connection *azuredevops.Connection, 
 
 func identityForSubject(ctx context.Context, connection *azuredevops.Connection, subject string) (*identity.Identity, error) {
 	none := identity.QueryMembershipValues.None
+	properties := identityUserProperties
 	callCtx, cancel := patCallContext(ctx)
 	items, err := readIdentities(callCtx, connection, identity.ReadIdentitiesArgs{
 		SubjectDescriptors: &subject,
 		QueryMembership:    &none,
+		Properties:         &properties,
 	})
 	cancel()
 	if item, ok := firstIdentity(items); ok && err == nil {
@@ -437,6 +439,7 @@ func identityForSubject(ctx context.Context, connection *azuredevops.Connection,
 	items, err = readIdentities(callCtx, connection, identity.ReadIdentitiesArgs{
 		Descriptors:     &subject,
 		QueryMembership: &none,
+		Properties:      &properties,
 	})
 	cancel()
 	if item, ok := firstIdentity(items); ok && err == nil {

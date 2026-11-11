@@ -117,7 +117,7 @@ Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depend
 - `audit` — the audit log route is not registered on this Azure DevOps Server 2022.1 collection. `azuredevopssh_audit_log` is implemented for servers that expose it.
 - `testplan` — Test Plans may require a separate license.
 - `memberentitlementmanagement` — member and user entitlement locations are not registered on this Azure DevOps Server 2022.1 collection. `/_apis/memberentitlements` and `/_apis/userentitlements` return 404. The tables are implemented for servers that expose the API.
-- `graph` — group and membership locations are not registered on this collection. `azuredevopssh_group_membership` reads direct membership from the Identity API when the graph location is missing. `azuredevopssh_group` and `azuredevopssh_user` still call graph.
+- `graph` — group and membership locations are not registered on this collection. `azuredevopssh_group_membership` reads direct membership from the Identity API when the graph location is missing. `azuredevopssh_user` calls `/_apis/graph/users`, then the Identity service. `azuredevopssh_group` still calls graph.
 - `identity` — the v7 ReadIdentities location id is not registered. `azuredevopssh_identity` calls `/_apis/identities` (api-version 6.0). A list needs `filter_value`, `descriptor`, or `id`.
 - `tokenadmin` — `azuredevopssh_personal_access_token` lists personal access token metadata and does not return the secret. A 401 or 403 means the calling token cannot administer tokens. SSH keys are excluded.
 

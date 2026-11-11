@@ -5,7 +5,7 @@ description: "Allows users to query Azure DevOps Users, specifically user detail
 
 # Table: azuredevopssh_user - Query Azure DevOps Users using SQL
 
-The `azuredevopssh_user` table lists users from the Graph API. Azure DevOps Server 2022.1 does not register that location on every collection. When it is missing, a query returns a location error. Direct membership of a known group is available from `azuredevopssh_group_membership`, which falls back to the Identity API.
+The `azuredevopssh_user` table lists users in the collection. It reads the Graph API when that location is registered. Azure DevOps Server 2022.1 often does not register the v7 Graph users location. The table then calls `/_apis/graph/users` directly. When that route is also missing, it lists users by walking the Valid Users group through the Identity service. On that path, `membership_state` is the identity active flag and `memberships` are the user's direct groups.
 
 ## Table Usage Guide
 

@@ -13,6 +13,7 @@ func TestIdentityQueryValues(t *testing.T) {
 		SearchFilter:    types.String("General"),
 		FilterValue:     types.String("Project Collection"),
 		QueryMembership: &direct,
+		Properties:      types.String("Account,Mail,Domain"),
 	})
 
 	if query.Get("api-version") != "6.0" {
@@ -23,6 +24,9 @@ func TestIdentityQueryValues(t *testing.T) {
 	}
 	if query.Get("queryMembership") != "direct" {
 		t.Fatalf("queryMembership = %s", query.Get("queryMembership"))
+	}
+	if query.Get("properties") != "Account,Mail,Domain" {
+		t.Fatalf("properties = %s", query.Get("properties"))
 	}
 }
 

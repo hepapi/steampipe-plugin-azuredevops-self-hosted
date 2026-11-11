@@ -187,7 +187,7 @@ These routes are missing or limited on the Azure DevOps Server 2022.1 collection
 
 - `azuredevopssh_audit_log` — the audit route is not registered.
 - `azuredevopssh_member_entitlement` and `azuredevopssh_user_entitlement` — member entitlement locations are not registered, and the REST routes return 404.
-- `azuredevopssh_group` and `azuredevopssh_user` call the Graph API, which is not registered on this collection. `azuredevopssh_group_membership` falls back to the Identity API.
+- `azuredevopssh_group` calls the Graph API, which is not registered on this collection. `azuredevopssh_user` calls `/_apis/graph/users` when the Graph location is missing, and lists users from the Identity service when that route is absent. `azuredevopssh_group_membership` falls back to the Identity API.
 - `azuredevopssh_identity` calls `/_apis/identities` (api-version 6.0) because the v7 Read Identities location is not registered. A list needs `filter_value`, `descriptor`, or `id`.
 - `azuredevopssh_code_search_result` requires `search_text`. Code Search must be installed.
 - `azuredevopssh_pipeline_approval` needs `project_id` and `id`. Server 2022 does not list approvals without an id.
