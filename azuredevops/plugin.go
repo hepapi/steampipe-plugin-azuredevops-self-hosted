@@ -51,6 +51,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"azuredevopssh_package":                      tableAzureDevOpsPackage(ctx),
 			"azuredevopssh_package_version":              tableAzureDevOpsPackageVersion(ctx),
 			"azuredevopssh_permission":                   tableAzureDevOpsPermission(ctx),
+			"azuredevopssh_personal_access_token":        tableAzureDevOpsPersonalAccessToken(ctx),
 			"azuredevopssh_pipeline":                     tableAzureDevOpsPipeline(ctx),
 			"azuredevopssh_pipeline_approval":            tableAzureDevOpsPipelineApproval(ctx),
 			"azuredevopssh_pipeline_check":               tableAzureDevOpsPipelineCheck(ctx),

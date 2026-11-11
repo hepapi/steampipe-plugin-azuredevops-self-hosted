@@ -93,6 +93,7 @@ Table pages live in [tables/](tables/).
 - [azuredevopssh_group](tables/azuredevopssh_group.md)
 - [azuredevopssh_group_membership](tables/azuredevopssh_group_membership.md)
 - [azuredevopssh_user](tables/azuredevopssh_user.md)
+- [azuredevopssh_personal_access_token](tables/azuredevopssh_personal_access_token.md)
 - [azuredevopssh_member_entitlement](tables/azuredevopssh_member_entitlement.md)
 - [azuredevopssh_user_entitlement](tables/azuredevopssh_user_entitlement.md)
 - [azuredevopssh_wiki](tables/azuredevopssh_wiki.md)

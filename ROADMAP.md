@@ -85,6 +85,7 @@ Each stage is independently shippable and testable. Checkboxes are marked `[x]` 
 - [x] `azuredevopssh_group_membership` — `graph`, with an Identity `queryMembership=direct` fallback when the graph location is not registered
 - [ ] `azuredevopssh_user_entitlement` — `memberentitlementmanagement` (implemented; this Server 2022.1 collection does not register the API)
 - [x] `azuredevopssh_identity` — `identity` (`/_apis/identities` when the v7 location id is not registered)
+- [x] `azuredevopssh_personal_access_token` — `tokenadmin.ListPersonalAccessTokens`. Server calls `/_apis/tokenadmin/personalaccesstokens/{subjectDescriptor}` with api-version 6.0-preview.1 when the v7 location is not registered. Lists name, scope, owner, and expiration for every user in Team Foundation Valid Users or Project Collection Valid Users. The secret is not returned. The calling token must be allowed to administer tokens. SSH keys are excluded.
 
 ---
 
@@ -118,6 +119,7 @@ Some packages may be unavailable or limited on Azure DevOps Server 2022.1 depend
 - `memberentitlementmanagement` — member and user entitlement locations are not registered on this Azure DevOps Server 2022.1 collection. `/_apis/memberentitlements` and `/_apis/userentitlements` return 404. The tables are implemented for servers that expose the API.
 - `graph` — group and membership locations are not registered on this collection. `azuredevopssh_group_membership` reads direct membership from the Identity API when the graph location is missing. `azuredevopssh_group` and `azuredevopssh_user` still call graph.
 - `identity` — the v7 ReadIdentities location id is not registered. `azuredevopssh_identity` calls `/_apis/identities` (api-version 6.0). A list needs `filter_value`, `descriptor`, or `id`.
+- `tokenadmin` — `azuredevopssh_personal_access_token` lists personal access token metadata and does not return the secret. A 401 or 403 means the calling token cannot administer tokens. SSH keys are excluded.
 
 ---
 

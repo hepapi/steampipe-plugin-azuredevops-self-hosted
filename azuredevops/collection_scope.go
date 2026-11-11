@@ -13,12 +13,14 @@ import (
 
 const collectionWildcard = "*"
 
-// serverScopedTables are registered on the Azure DevOps Server deployment,
-// not on a project collection. Queries against them run once at the server root.
+// serverScopedTables run once per connection. They are registered on the
+// Azure DevOps Server deployment, or they describe deployment-wide data that
+// would otherwise repeat once per collection.
 var serverScopedTables = map[string]struct{}{
-	"azuredevopssh_project_collection": {},
-	"azuredevopssh_agent_pool":         {},
-	"azuredevopssh_agent":              {},
+	"azuredevopssh_project_collection":    {},
+	"azuredevopssh_agent_pool":            {},
+	"azuredevopssh_agent":                 {},
+	"azuredevopssh_personal_access_token": {},
 }
 
 func isServerScopedTable(name string) bool {
