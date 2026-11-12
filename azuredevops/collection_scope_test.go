@@ -1,6 +1,7 @@
 package azuredevops
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"testing"
@@ -216,6 +217,13 @@ func TestFilterCollectionsByOrganization(t *testing.T) {
 	}
 	if got := filterCollectionsByOrganization(collections, "Missing"); len(got) != 0 {
 		t.Fatalf("missing name = %v", got)
+	}
+}
+
+func TestPluginDoesNotUseOrganizationConnectionKey(t *testing.T) {
+	p := Plugin(context.Background())
+	if len(p.ConnectionKeyColumns) != 0 {
+		t.Fatalf("connection key columns = %#v", p.ConnectionKeyColumns)
 	}
 }
 

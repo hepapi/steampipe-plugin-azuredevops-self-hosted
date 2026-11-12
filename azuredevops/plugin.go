@@ -15,12 +15,10 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
 		},
-		ConnectionKeyColumns: []plugin.ConnectionKeyColumn{
-			{
-				Name:    "organization",
-				Hydrate: getOrganization,
-			},
-		},
+		// organization is not a connection key. One connection can list many
+		// collections, so `where organization = ...` has to reach the collection
+		// matrix. A connection key would drop the connection unless the value
+		// matched the single name derived from organization_url.
 		TableMap: map[string]*plugin.Table{
 			"azuredevopssh_agent":                        tableAzureDevOpsAgent(ctx),
 			"azuredevopssh_agent_pool":                   tableAzureDevOpsAgentPool(ctx),
