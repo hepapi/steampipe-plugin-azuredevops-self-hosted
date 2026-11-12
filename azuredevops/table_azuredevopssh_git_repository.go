@@ -232,9 +232,9 @@ func getRepositoryDefaultBranch(ctx context.Context, d *plugin.QueryData, h *plu
 
 	branch, err := client.GetBranch(ctx, input)
 	if err != nil {
-		// A repository with no branches (e.g. an empty/uninitialized repo)
-		// returns VS403403 "Cannot find any branches". Leave the column null.
-		if isNoBranchesError(err) {
+		// A repository with no branches, or a default branch that was deleted,
+		// cannot resolve branch stats. Leave the column null.
+		if isNoBranchesError(err) || isNotFound(err) {
 			return nil, nil
 		}
 		plugin.Logger(ctx).Error("azuredevopssh_git_repository.getRepositoryDefaultBranch", "api_error", err)
@@ -255,5 +255,6 @@ func isNoBranchesError(err error) bool {
 	msg := strings.ToLower(err.Error())
 	return strings.Contains(msg, "vs403403") ||
 		strings.Contains(msg, "cannot find any branches") ||
-		strings.Contains(msg, "no branches exist")
+		strings.Contains(msg, "no branches exist") ||
+		strings.Contains(msg, "does not exist")
 }

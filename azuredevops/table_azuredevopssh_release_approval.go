@@ -191,6 +191,12 @@ func listReleaseApprovals(ctx context.Context, d *plugin.QueryData, h *plugin.Hy
 		for {
 			approvals, err := client.GetApprovals(ctx, input)
 			if err != nil {
+				// A project with no classic release service has no ReleaseManagement
+				// dataspace. Skip that project instead of failing the whole list.
+				if releaseManagementUnavailable(err) {
+					plugin.Logger(ctx).Warn("azuredevopssh_release_approval.listReleaseApprovals", "project_id", projectID, "skipped", err)
+					return nil, nil
+				}
 				plugin.Logger(ctx).Error("azuredevopssh_release_approval.listReleaseApprovals", "project_id", projectID, "status", string(status), "api_error", err)
 				return nil, err
 			}
@@ -218,4 +224,14 @@ func listReleaseApprovals(ctx context.Context, d *plugin.QueryData, h *plugin.Hy
 		}
 	}
 	return nil, nil
+}
+
+// releaseManagementUnavailable reports a project that has no classic release
+// dataspace, so approval listing cannot run there.
+func releaseManagementUnavailable(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "could not find dataspace") && strings.Contains(msg, "releasemanagement")
 }
