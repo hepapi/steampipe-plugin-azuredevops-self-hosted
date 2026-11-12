@@ -108,12 +108,14 @@ func TestClassifyCollectionUsers(t *testing.T) {
 
 func TestOriginFromDescriptor(t *testing.T) {
 	cases := map[string]string{
-		"aad.ada": "aad",
-		"msa.ada": "msa",
-		"win.ada": "ad",
-		"svc.ada": "vsts",
-		"imp.ada": "vsts",
-		"other":   "",
+		"aad.ada":   "aad",
+		"msa.ada":   "msa",
+		"win.ada":   "ad",
+		"svc.ada":   "vsts",
+		"imp.ada":   "vsts",
+		"vssgp.ada": "vsts",
+		"aadgp.ada": "aad",
+		"other":     "",
 	}
 	for descriptor, origin := range cases {
 		if got := originFromDescriptor(descriptor); got != origin {

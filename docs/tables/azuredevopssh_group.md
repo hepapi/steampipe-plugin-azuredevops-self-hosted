@@ -5,7 +5,7 @@ description: "Allows users to query Azure DevOps Groups, providing detailed insi
 
 # Table: azuredevopssh_group - Query Azure DevOps Groups using SQL
 
-The `azuredevopssh_group` table lists groups from the Graph API. Azure DevOps Server 2022.1 does not register that location on every collection. When it is missing, a query returns a location error. Direct membership of a known group is available from `azuredevopssh_group_membership`, which falls back to the Identity API.
+The `azuredevopssh_group` table lists groups in the collection. It reads the Graph API when that location is registered. Azure DevOps Server 2022.1 often does not register the v7 Graph groups location (`ebbe6af8-0b91-4c13-8cf1-777c14858188`). The table then calls `/_apis/graph/groups` directly. When that route is also missing, it lists groups by walking the Valid Users group through the Identity service. On that path, `membership_state` is the identity active flag and `memberships` are the group's direct parent groups.
 
 ## Table Usage Guide
 

@@ -406,8 +406,10 @@ func originFromDescriptor(descriptor string) string {
 		return "msa"
 	case strings.HasPrefix(descriptor, "win."):
 		return "ad"
-	case strings.HasPrefix(descriptor, "svc."), strings.HasPrefix(descriptor, "imp."):
+	case strings.HasPrefix(descriptor, "svc."), strings.HasPrefix(descriptor, "imp."), strings.HasPrefix(descriptor, "vssgp."):
 		return "vsts"
+	case strings.HasPrefix(descriptor, "aadgp."):
+		return "aad"
 	default:
 		return ""
 	}

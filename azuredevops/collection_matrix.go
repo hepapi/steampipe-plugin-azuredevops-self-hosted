@@ -3,6 +3,7 @@ package azuredevops
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -43,14 +44,54 @@ func collectionMatrix(ctx context.Context, d *plugin.QueryData) []map[string]int
 		return collectionMatrixError(err)
 	}
 
+	// An organization qual limits the list to that collection. The SDK then
+	// keeps a matrix item only when its organization value equals the qual,
+	// so the returned item uses the query text.
+	org := strings.TrimSpace(qualString(d, "organization"))
+	if org != "" {
+		matched := filterCollectionsByOrganization(selected, org)
+		if len(matched) == 0 {
+			names := make([]string, 0, len(selected))
+			for _, collection := range selected {
+				names = append(names, collection.Name)
+			}
+			discoveredList := strings.Join(names, ", ")
+			if discoveredList == "" {
+				discoveredList = "(none)"
+			}
+			return collectionMatrixError(fmt.Errorf("collection %q was not found on %s; discovered collections: %s", org, plan.ServerURL, discoveredList))
+		}
+		selected = matched
+	}
+
 	items := make([]map[string]interface{}, 0, len(selected))
 	for _, collection := range selected {
+		name := collection.Name
+		if org != "" {
+			name = org
+		}
 		items = append(items, map[string]interface{}{
-			"organization":   collection.Name,
+			"organization":   name,
 			"collection_url": collection.URL,
 		})
 	}
 	return items
+}
+
+// filterCollectionsByOrganization keeps collections whose name matches name,
+// ignoring case and surrounding space. An empty name returns the input unchanged.
+func filterCollectionsByOrganization(collections []projectCollection, name string) []projectCollection {
+	name = strings.TrimSpace(name)
+	if name == "" {
+		return collections
+	}
+	matched := make([]projectCollection, 0, 1)
+	for _, collection := range collections {
+		if strings.EqualFold(collection.Name, name) {
+			matched = append(matched, collection)
+		}
+	}
+	return matched
 }
 
 func collectionMatrixError(err error) []map[string]interface{} {
@@ -134,5 +175,23 @@ func attachCollectionMatrix(p *plugin.Plugin) {
 			continue
 		}
 		table.GetMatrixItemFunc = collectionMatrix
+		ensureOrganizationKeyColumn(table)
 	}
+}
+
+// ensureOrganizationKeyColumn makes organization an optional list qual so
+// Steampipe pushes `where organization = ...` before the matrix is built.
+func ensureOrganizationKeyColumn(table *plugin.Table) {
+	if table.List == nil {
+		return
+	}
+	for _, column := range table.List.KeyColumns {
+		if column != nil && column.Name == "organization" {
+			return
+		}
+	}
+	table.List.KeyColumns = append(table.List.KeyColumns, &plugin.KeyColumn{
+		Name:    "organization",
+		Require: plugin.Optional,
+	})
 }

@@ -199,6 +199,61 @@ func TestAbsentFromCollection(t *testing.T) {
 	}
 }
 
+func TestFilterCollectionsByOrganization(t *testing.T) {
+	collections := []projectCollection{
+		{Name: "Git", URL: "https://code.example.net/Git"},
+		{Name: "Archive", URL: "https://code.example.net/Archive"},
+	}
+
+	if got := collectionNames(filterCollectionsByOrganization(collections, "  ")); got != "Git,Archive" {
+		t.Fatalf("blank name = %s", got)
+	}
+	if got := collectionNames(filterCollectionsByOrganization(collections, "Git")); got != "Git" {
+		t.Fatalf("exact name = %s", got)
+	}
+	if got := collectionNames(filterCollectionsByOrganization(collections, " archive ")); got != "Archive" {
+		t.Fatalf("case-insensitive name = %s", got)
+	}
+	if got := filterCollectionsByOrganization(collections, "Missing"); len(got) != 0 {
+		t.Fatalf("missing name = %v", got)
+	}
+}
+
+func TestAttachCollectionMatrixOrganizationKey(t *testing.T) {
+	project := &plugin.Table{Name: "azuredevopssh_project", List: &plugin.ListConfig{}}
+	collection := &plugin.Table{Name: "azuredevopssh_project_collection", List: &plugin.ListConfig{}}
+	p := &plugin.Plugin{TableMap: map[string]*plugin.Table{
+		project.Name:    project,
+		collection.Name: collection,
+	}}
+
+	attachCollectionMatrix(p)
+	attachCollectionMatrix(p)
+
+	if project.GetMatrixItemFunc == nil {
+		t.Fatal("project table has no collection matrix")
+	}
+	if got := organizationKeyCount(project.List.KeyColumns); got != 1 {
+		t.Fatalf("organization key count = %d", got)
+	}
+	if collection.GetMatrixItemFunc != nil {
+		t.Fatal("project collection table must stay server-scoped")
+	}
+	if got := organizationKeyCount(collection.List.KeyColumns); got != 0 {
+		t.Fatalf("server table organization key count = %d", got)
+	}
+}
+
+func organizationKeyCount(columns plugin.KeyColumnSlice) int {
+	count := 0
+	for _, column := range columns {
+		if column != nil && column.Name == "organization" {
+			count++
+		}
+	}
+	return count
+}
+
 func collectionNames(collections []projectCollection) string {
 	names := make([]string, len(collections))
 	for i, collection := range collections {

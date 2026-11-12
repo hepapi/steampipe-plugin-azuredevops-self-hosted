@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/graph"
-	"github.com/turbot/go-kit/types"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
@@ -116,42 +115,67 @@ func listGroups(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData)
 	}
 
 	client, err := graph.NewClient(ctx, connection)
-	if err != nil {
+	if err != nil && !apiNotRegistered(err) {
 		plugin.Logger(ctx).Error("azuredevopssh_group.listGroups", "client_error", err)
 		return nil, err
 	}
-
-	input := graph.ListGroupsArgs{}
-
-	for {
-		groups, err := client.ListGroups(ctx, input)
-		if err != nil {
-			plugin.Logger(ctx).Error("azuredevopssh_group.listGroups", "api_error", err)
+	if err == nil {
+		err = streamGraphGroups(ctx, d, client)
+		if err == nil || !apiNotRegistered(err) {
+			if err != nil {
+				plugin.Logger(ctx).Error("azuredevopssh_group.listGroups", "api_error", err)
+			}
 			return nil, err
 		}
-
-		for _, group := range *groups.GraphGroups {
-			d.StreamListItem(ctx, group)
-
-			// Context can be cancelled due to manual cancellation or the limit has been hit
-			if d.RowsRemaining(ctx) == 0 {
-				return nil, nil
-			}
-		}
-		continuationToken := *groups.ContinuationToken
-		if continuationToken[0] == "" {
-			break
-		}
-		input.ContinuationToken = types.String(continuationToken[0])
 	}
 
+	routeErr := streamGraphGroupsByRoute(ctx, d, connection)
+	if routeErr == nil || !graphRouteMissing(routeErr) {
+		if routeErr != nil {
+			plugin.Logger(ctx).Error("azuredevopssh_group.listGroups", "api_error", routeErr)
+		}
+		return nil, routeErr
+	}
+
+	plugin.Logger(ctx).Warn("azuredevopssh_group.listGroups", "fallback", "identity", "reason", routeErr)
+	if err = streamGroupsFromIdentity(ctx, d, connection); err != nil {
+		plugin.Logger(ctx).Error("azuredevopssh_group.listGroups", "api_error", err)
+		return nil, err
+	}
 	return nil, nil
 }
 
-func getGroup(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	descriptor := d.EqualsQuals["descriptor"].GetStringValue()
+func streamGraphGroups(ctx context.Context, d *plugin.QueryData, client graph.Client) error {
+	input := graph.ListGroupsArgs{}
+	seenTokens := map[string]struct{}{}
+	for {
+		groups, err := client.ListGroups(ctx, input)
+		if err != nil {
+			return err
+		}
+		if groups == nil || groups.GraphGroups == nil {
+			return nil
+		}
+		for _, group := range *groups.GraphGroups {
+			d.StreamListItem(ctx, groupListItem{GraphGroup: group})
+			if d.RowsRemaining(ctx) == 0 {
+				return nil
+			}
+		}
+		token := firstContinuation(groups.ContinuationToken)
+		if token == "" {
+			return nil
+		}
+		if _, exists := seenTokens[token]; exists {
+			return nil
+		}
+		seenTokens[token] = struct{}{}
+		input.ContinuationToken = &token
+	}
+}
 
-	// Check if descriptor is empty
+func getGroup(ctx context.Context, d *plugin.QueryData, _ *plugin.HydrateData) (interface{}, error) {
+	descriptor := d.EqualsQuals["descriptor"].GetStringValue()
 	if descriptor == "" {
 		return nil, nil
 	}
@@ -163,29 +187,61 @@ func getGroup(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (
 	}
 
 	client, err := graph.NewClient(ctx, connection)
-	if err != nil {
+	if err != nil && !apiNotRegistered(err) {
 		plugin.Logger(ctx).Error("azuredevopssh_group.getGroup", "client_error", err)
 		return nil, err
 	}
-
-	input := graph.GetGroupArgs{
-		GroupDescriptor: types.String(descriptor),
+	if err == nil {
+		output, getErr := client.GetGroup(ctx, graph.GetGroupArgs{GroupDescriptor: &descriptor})
+		if getErr == nil && output != nil {
+			return groupListItem{GraphGroup: *output}, nil
+		}
+		if getErr != nil && !apiNotRegistered(getErr) {
+			if absentFromCollection(d, getErr) {
+				return nil, nil
+			}
+			plugin.Logger(ctx).Error("azuredevopssh_group.getGroup", "api_error", getErr)
+			return nil, getErr
+		}
 	}
 
-	output, err := client.GetGroup(ctx, input)
-	if err != nil {
-		if absentFromCollection(d, err) {
+	output, routeErr := getGraphGroupByRoute(ctx, connection, descriptor)
+	if routeErr == nil && output != nil {
+		return groupListItem{GraphGroup: *output}, nil
+	}
+	if routeErr != nil && !graphRouteMissing(routeErr) {
+		if absentFromCollection(d, routeErr) {
 			return nil, nil
 		}
-		plugin.Logger(ctx).Error("azuredevopssh_group.getGroup", "api_error", err)
-		return nil, err
+		plugin.Logger(ctx).Error("azuredevopssh_group.getGroup", "api_error", routeErr)
+		return nil, routeErr
 	}
 
-	return *output, nil
+	item, idErr := identityGroupForDescriptor(ctx, connection, descriptor)
+	if idErr != nil {
+		plugin.Logger(ctx).Error("azuredevopssh_group.getGroup", "api_error", idErr)
+		return nil, idErr
+	}
+	if item == nil {
+		return nil, nil
+	}
+	row, ok := graphGroupFromIdentity(*item)
+	if !ok {
+		return nil, nil
+	}
+	return row, nil
 }
 
 func getGroupMembershipState(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	group := h.Item.(graph.GraphGroup)
+	group := groupFromHydrate(h)
+	if group.MembershipActive != nil {
+		return group.MembershipActive, nil
+	}
+	descriptor := groupDescriptor(group)
+	if descriptor == "" {
+		return nil, nil
+	}
+
 	connection, err := getConnection(ctx, d)
 	if err != nil {
 		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMembershipState", "connection_error", err)
@@ -193,26 +249,45 @@ func getGroupMembershipState(ctx context.Context, d *plugin.QueryData, h *plugin
 	}
 
 	client, err := graph.NewClient(ctx, connection)
-	if err != nil {
+	if err != nil && !apiNotRegistered(err) {
 		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMembershipState", "client_error", err)
 		return nil, err
 	}
-
-	input := graph.GetMembershipStateArgs{
-		SubjectDescriptor: group.Descriptor,
+	if err == nil {
+		output, stateErr := client.GetMembershipState(ctx, graph.GetMembershipStateArgs{SubjectDescriptor: &descriptor})
+		if stateErr == nil {
+			if output == nil {
+				return nil, nil
+			}
+			return output.Active, nil
+		}
+		if !apiNotRegistered(stateErr) {
+			plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMembershipState", "api_error", stateErr)
+			return nil, stateErr
+		}
 	}
 
-	output, err := client.GetMembershipState(ctx, input)
-	if err != nil {
-		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMembershipState", "api_error", err)
-		return nil, err
+	item, idErr := identityForSubject(ctx, connection, descriptor)
+	if idErr != nil {
+		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMembershipState", "api_error", idErr)
+		return nil, idErr
 	}
-
-	return output.Active, nil
+	if item == nil {
+		return nil, nil
+	}
+	return item.IsActive, nil
 }
 
 func getGroupMemberships(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	group := h.Item.(graph.GraphGroup)
+	group := groupFromHydrate(h)
+	if group.Memberships != nil {
+		return group.Memberships, nil
+	}
+	descriptor := groupDescriptor(group)
+	if descriptor == "" {
+		return nil, nil
+	}
+
 	connection, err := getConnection(ctx, d)
 	if err != nil {
 		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMemberships", "connection_error", err)
@@ -220,20 +295,29 @@ func getGroupMemberships(ctx context.Context, d *plugin.QueryData, h *plugin.Hyd
 	}
 
 	client, err := graph.NewClient(ctx, connection)
-	if err != nil {
+	if err != nil && !apiNotRegistered(err) {
 		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMemberships", "client_error", err)
 		return nil, err
 	}
-
-	input := graph.ListMembershipsArgs{
-		SubjectDescriptor: group.Descriptor,
+	if err == nil {
+		output, listErr := client.ListMemberships(ctx, graph.ListMembershipsArgs{SubjectDescriptor: &descriptor})
+		if listErr == nil {
+			return output, nil
+		}
+		if !apiNotRegistered(listErr) {
+			plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMemberships", "api_error", listErr)
+			return nil, listErr
+		}
 	}
 
-	output, err := client.ListMemberships(ctx, input)
-	if err != nil {
-		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMemberships", "api_error", err)
-		return nil, err
+	item, idErr := identityForMembership(ctx, connection, descriptor)
+	if idErr != nil {
+		plugin.Logger(ctx).Error("azuredevopssh_group.getGroupMemberships", "api_error", idErr)
+		return nil, idErr
 	}
-
-	return output, nil
+	memberships := membershipsFromMemberOf(descriptor, nil)
+	if item != nil {
+		memberships = membershipsFromMemberOf(descriptor, item.MemberOf)
+	}
+	return &memberships, nil
 }
